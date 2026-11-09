@@ -1,0 +1,111 @@
+// Angular Material theme, driven by the JodVyapar tokens. Material's system variables
+// (--mat-sys-*) are pointed at our semantic tokens, so Material components follow the brand
+// (and will follow a future dark theme) without per-page overrides.
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Inter,
+      density: 0,
+    )
+  );
+
+  @include mat.theme-overrides(
+    (
+      primary: var(--jv-color-primary),
+      on-primary: var(--jv-color-on-primary),
+      primary-container: var(--jv-color-primary-soft),
+      on-primary-container: var(--jv-blue-800),
+      secondary-container: var(--jv-color-primary-soft),
+      on-secondary-container: var(--jv-blue-800),
+      surface: var(--jv-color-surface),
+      surface-container-lowest: var(--jv-color-surface),
+      surface-container-low: var(--jv-color-surface),
+      surface-container: var(--jv-color-surface),
+      surface-container-high: var(--jv-color-surface),
+      on-surface: var(--jv-color-text),
+      on-surface-variant: var(--jv-color-text-muted),
+      outline: var(--jv-color-border-input),
+      outline-variant: var(--jv-color-border),
+      error: var(--jv-color-error),
+      on-error: var(--jv-color-text-inverse),
+      error-container: var(--jv-color-error-soft),
+      corner-extra-small: var(--jv-radius-sm),
+      corner-small: var(--jv-radius-md),
+      corner-medium: var(--jv-radius-lg),
+      corner-large: var(--jv-radius-xl),
+    )
+  );
+
+  @include mat.form-field-overrides(
+    (
+      outlined-container-shape: var(--jv-radius-md),
+      outlined-outline-color: var(--jv-color-border-input),
+      outlined-hover-outline-color: var(--jv-color-text-muted),
+      outlined-focus-outline-color: var(--jv-color-primary),
+      outlined-focus-outline-width: var(--jv-border-width-strong),
+      outlined-label-text-color: var(--jv-color-text-muted),
+      outlined-input-text-placeholder-color: var(--jv-color-text-subtle),
+      outlined-error-outline-color: var(--jv-color-error),
+      outlined-error-hover-outline-color: var(--jv-color-error),
+      outlined-error-focus-outline-color: var(--jv-color-error),
+    )
+  );
+
+  @include mat.button-overrides(
+    (
+      filled-container-shape: var(--jv-radius-md),
+      filled-container-height: var(--jv-control-height),
+      filled-horizontal-padding: var(--jv-space-6),
+      filled-label-text-weight: var(--jv-font-weight-semibold),
+      outlined-container-shape: var(--jv-radius-md),
+      outlined-label-text-weight: var(--jv-font-weight-semibold),
+      text-container-shape: var(--jv-radius-md),
+      text-label-text-weight: var(--jv-font-weight-semibold),
+    )
+  );
+
+  @include mat.card-overrides(
+    (
+      outlined-container-shape: var(--jv-radius-lg),
+      outlined-outline-color: var(--jv-color-border),
+    )
+  );
+
+  @include mat.select-overrides(
+    (
+      panel-background-color: var(--jv-color-surface),
+    )
+  );
+
+  @include mat.snack-bar-overrides(
+    (
+      container-shape: var(--jv-radius-md),
+      container-color: var(--jv-grey-900),
+      supporting-text-color: var(--jv-color-text-inverse),
+      button-color: var(--jv-blue-200),
+    )
+  );
+}
+
+// Material draws its own focus state for these; don't add the global outline on top.
+.mat-mdc-input-element:focus-visible,
+.mat-mdc-select:focus-visible,
+.mdc-checkbox__native-control:focus-visible {
+  outline: none;
+}
+
+// Softer hover on the outline: transition the border colour instead of snapping.
+.mdc-notched-outline > * {
+  transition: border-color var(--jv-duration-fast) var(--jv-ease);
+}
+
+.mat-mdc-select-panel {
+  border-radius: var(--jv-radius-md) !important; // Material sets this inline-level specific
+  box-shadow: var(--jv-shadow-lg) !important;
+}

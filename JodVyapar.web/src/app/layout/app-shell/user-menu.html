@@ -1,0 +1,53 @@
+@if (auth.currentUser(); as user) {
+  <button
+    mat-button
+    type="button"
+    class="user-button"
+    [matMenuTriggerFor]="userMenu"
+    [attr.aria-label]="'Account menu for ' + user.fullName"
+  >
+    <span class="user-button-content">
+      <app-avatar [name]="user.fullName" size="sm" />
+      <span class="user-first-name">{{ firstName() }}</span>
+      <mat-icon class="chevron" aria-hidden="true">expand_more</mat-icon>
+    </span>
+  </button>
+
+  <mat-menu #userMenu="matMenu" xPosition="before">
+    <div class="menu-header">
+      <app-avatar [name]="user.fullName" />
+      <div class="menu-identity">
+        <span class="menu-name">{{ user.fullName }}</span>
+        @if (user.companyName) {
+          <span class="menu-company">{{ user.companyName }}</span>
+        }
+        <app-role-badges [roles]="user.roles" />
+      </div>
+    </div>
+
+    @if (auth.canSwitchMode()) {
+      <!-- Keep the menu open on click, so the user sees the new mode take effect. -->
+      <div class="menu-mode" (click)="$event.stopPropagation()">
+        <span class="menu-mode-label" aria-hidden="true">Mode</span>
+        <app-mode-switcher [fullWidth]="true" />
+      </div>
+    }
+
+    <mat-divider />
+    <a mat-menu-item routerLink="/profile">
+      <mat-icon aria-hidden="true">person_outline</mat-icon>
+      <span>Profile</span>
+    </a>
+    @if (auth.hasRole('Admin')) {
+      <a mat-menu-item routerLink="/admin">
+        <mat-icon aria-hidden="true">admin_panel_settings</mat-icon>
+        <span>Admin</span>
+      </a>
+    }
+    <mat-divider />
+    <button mat-menu-item type="button" (click)="auth.logout()">
+      <mat-icon aria-hidden="true">logout</mat-icon>
+      <span>Sign out</span>
+    </button>
+  </mat-menu>
+}

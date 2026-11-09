@@ -1,0 +1,34 @@
+@use 'breakpoints' as bp;
+
+// Stacked on phones, side by side from `sm` (same as .jv-grid-2).
+:host {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--jv-space-4);
+
+  @include bp.up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+// Loading / error hints under the selects.
+.list-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--jv-space-2);
+
+  &.is-error {
+    color: var(--jv-color-error);
+  }
+}
+
+.retry {
+  --mat-button-text-container-height: auto;
+  --mat-button-text-horizontal-padding: var(--jv-space-1);
+  min-width: 0;
+  font-size: inherit;
+}

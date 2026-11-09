@@ -1,0 +1,11 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+
+# Logs
+JodVyapar.api/logs/
+*.log

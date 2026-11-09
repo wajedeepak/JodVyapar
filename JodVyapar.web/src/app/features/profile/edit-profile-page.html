@@ -1,0 +1,102 @@
+<div class="page">
+  <app-page-header title="Edit profile" subtitle="Keep your details up to date so buyers and sellers can trust you." />
+
+  @switch (status()) {
+    @case ('loading') {
+      <div class="form-card" aria-busy="true">
+        <span class="jv-sr-only" role="status">Loading your profile…</span>
+        @for (row of [1, 2, 3, 4, 5]; track row) {
+          <app-skeleton shape="title" [width]="row % 2 ? '100%' : '70%'" />
+        }
+      </div>
+    }
+
+    @case ('error') {
+      <app-alert-banner type="error" title="Couldn't load your profile">
+        <p>{{ loadError() }}</p>
+        <button mat-button type="button" class="banner-action" (click)="load()">Retry</button>
+      </app-alert-banner>
+    }
+
+    @case ('ready') {
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate class="form-card">
+        @if (formError(); as message) {
+          <app-alert-banner type="error" [dismissible]="true" (dismissed)="formError.set(null)">
+            {{ message }}
+          </app-alert-banner>
+        }
+
+        <app-form-section title="Personal">
+          <div class="jv-grid-2">
+            <app-text-field
+              [control]="form.controls.fullName"
+              label="Full name"
+              autocomplete="name"
+              [maxlength]="100"
+              [errorMessages]="messages['fullName']"
+              [autofocus]="true"
+            />
+            <app-text-field
+              [control]="form.controls.mobile"
+              label="Mobile number"
+              type="tel"
+              inputmode="numeric"
+              prefix="+91"
+              autocomplete="tel-national"
+              [maxlength]="10"
+              [errorMessages]="messages['mobile']"
+            />
+          </div>
+          <div class="read-only">
+            <span class="label">Email</span>
+            <span>{{ profile()?.email }}</span>
+            <span class="jv-text-muted jv-text-small">You sign in with this email, so it can't be changed here.</span>
+          </div>
+        </app-form-section>
+
+        <app-form-section title="Company">
+          <app-text-field
+            [control]="form.controls.companyName"
+            label="Company name"
+            autocomplete="organization"
+            [maxlength]="150"
+            [errorMessages]="messages['companyName']"
+          />
+          <app-state-city-fields [stateControl]="form.controls.stateId" [cityControl]="form.controls.cityId" />
+        </app-form-section>
+
+        <app-form-section title="Business details" description="Optional, but they help others trust your business.">
+          <app-text-field
+            [control]="form.controls.gstin"
+            label="GSTIN"
+            autocomplete="off"
+            [maxlength]="15"
+            hint="15 characters, for example 27ABCDE1234F1Z5."
+            [errorMessages]="messages['gstin']"
+          />
+          @if (gstinWillNeedVerifying()) {
+            <app-alert-banner type="warning">Your GSTIN is verified. If you change it, it will show as not verified.</app-alert-banner>
+          }
+
+          <mat-form-field class="full-width">
+            <mat-label>About your business</mat-label>
+            <textarea
+              matInput
+              formControlName="about"
+              rows="4"
+              [attr.maxlength]="aboutMaxLength"
+              placeholder="What you make or trade, who you work with, since when."
+            ></textarea>
+            <mat-hint align="end">{{ aboutLength() }} / {{ aboutMaxLength }}</mat-hint>
+            <mat-error>{{ error('about') }}</mat-error>
+          </mat-form-field>
+        </app-form-section>
+
+        <div class="form-actions">
+          <a mat-stroked-button routerLink="/profile">Cancel</a>
+          <app-primary-button type="submit" label="Save changes" loadingLabel="Saving…" [loading]="saving()" />
+        </div>
+      </form>
+    }
+  }
+</div>

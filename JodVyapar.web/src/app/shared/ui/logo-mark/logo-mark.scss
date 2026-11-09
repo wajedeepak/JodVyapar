@@ -1,0 +1,61 @@
+:host {
+  --logo-size: var(--jv-icon-size-lg);
+  --logo-text: var(--jv-font-size-xl);
+  --logo-tile: var(--jv-color-primary);
+  --logo-ring: var(--jv-color-on-primary);
+  --logo-ink: var(--jv-color-text);
+  --logo-accent: var(--jv-color-primary);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--jv-space-2);
+  line-height: 1;
+}
+
+:host(.size-sm) {
+  --logo-size: var(--jv-icon-size-md);
+  --logo-text: var(--jv-font-size-lg);
+}
+
+:host(.size-lg) {
+  --logo-size: var(--jv-space-10);
+  --logo-text: var(--jv-font-size-2xl);
+}
+
+:host(.variant-inverse) {
+  --logo-tile: var(--jv-color-surface);
+  --logo-ring: var(--jv-color-primary);
+  --logo-ink: var(--jv-color-text-inverse);
+  --logo-accent: var(--jv-blue-100);
+}
+
+.mark {
+  width: var(--logo-size);
+  height: var(--logo-size);
+  flex: none;
+}
+
+.tile {
+  fill: var(--logo-tile);
+}
+
+.ring {
+  fill: none;
+  stroke: var(--logo-ring);
+  stroke-width: 2.5;
+}
+
+.ring-2 {
+  opacity: 0.75;
+}
+
+.wordmark {
+  color: var(--logo-ink);
+  font-size: var(--logo-text);
+  font-weight: var(--jv-font-weight-bold);
+  letter-spacing: var(--jv-letter-spacing-tight);
+}
+
+.accent {
+  color: var(--logo-accent);
+}

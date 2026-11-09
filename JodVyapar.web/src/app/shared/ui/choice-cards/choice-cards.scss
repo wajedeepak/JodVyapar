@@ -1,0 +1,95 @@
+:host {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: var(--jv-space-3);
+}
+
+:host([aria-disabled='true']) {
+  opacity: 0.6;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--jv-space-3);
+  padding: var(--jv-space-4);
+  border: var(--jv-border-width) solid var(--jv-color-border-strong);
+  border-radius: var(--jv-radius-lg);
+  background: var(--jv-color-surface);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    var(--jv-transition-colors),
+    transform var(--jv-duration-fast) var(--jv-ease);
+
+  &:hover {
+    border-color: var(--jv-color-primary-border);
+    box-shadow: var(--jv-shadow-sm);
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
+  // A second, inset ring on selection so the state is visible without relying on colour alone.
+  &.selected {
+    border-color: var(--jv-color-primary);
+    background: var(--jv-color-primary-soft);
+    box-shadow: inset 0 0 0 var(--jv-border-width) var(--jv-color-primary);
+  }
+}
+
+.icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--jv-space-10);
+  height: var(--jv-space-10);
+  border-radius: var(--jv-radius-md);
+  background: var(--jv-color-primary-soft);
+  color: var(--jv-color-primary);
+  transition: var(--jv-transition-colors);
+
+  .selected & {
+    background: var(--jv-color-primary);
+    color: var(--jv-color-on-primary);
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-1);
+  padding-right: var(--jv-space-6);
+}
+
+.title {
+  font-size: var(--jv-font-size-md);
+  font-weight: var(--jv-font-weight-semibold);
+  line-height: var(--jv-line-height-tight);
+  color: var(--jv-color-text);
+}
+
+.description {
+  font-size: var(--jv-font-size-sm);
+  line-height: var(--jv-line-height-snug);
+  color: var(--jv-color-text-muted);
+}
+
+.check {
+  position: absolute;
+  top: var(--jv-space-3);
+  right: var(--jv-space-3);
+  color: var(--jv-color-border-input);
+  transition: color var(--jv-duration-fast) var(--jv-ease);
+
+  .selected & {
+    color: var(--jv-color-primary);
+  }
+}

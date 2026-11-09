@@ -1,0 +1,70 @@
+@use 'breakpoints' as bp;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--jv-space-4);
+  padding: var(--jv-space-5);
+  border: var(--jv-border-width) solid var(--jv-color-border);
+  border-radius: var(--jv-radius-lg);
+  background: var(--jv-color-surface);
+
+  @include bp.up(sm) {
+    flex-direction: row;
+    gap: var(--jv-space-5);
+    padding: var(--jv-space-6);
+  }
+}
+
+.identity {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--jv-space-1);
+  min-width: 0;
+}
+
+.company {
+  font-size: var(--jv-font-size-lg);
+  font-weight: var(--jv-font-weight-medium);
+  color: var(--jv-color-text);
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--jv-space-1);
+  color: var(--jv-color-text-muted);
+  font-size: var(--jv-font-size-sm);
+
+  mat-icon {
+    width: var(--jv-icon-size-sm);
+    height: var(--jv-icon-size-sm);
+    font-size: var(--jv-icon-size-sm);
+  }
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--jv-space-2);
+  margin-top: var(--jv-space-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--jv-space-3);
+  width: 100%;
+
+  @include bp.up(sm) {
+    flex-direction: column;
+    align-items: stretch;
+    width: auto;
+  }
+
+  &:empty {
+    display: none;
+  }
+}

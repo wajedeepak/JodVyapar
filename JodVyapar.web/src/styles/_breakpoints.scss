@@ -1,0 +1,18 @@
+// Breakpoints. CSS custom properties cannot be used in media queries, so these are Sass
+// variables; components `@use 'breakpoints' as bp;` and write `@include bp.up(md) { ... }`.
+// Emits no CSS on its own.
+
+@use 'sass:map';
+
+$breakpoints: (
+  sm: 600px, // large phones / small tablets
+  nav: 768px, // app shell: bottom tab bar below, top bar navigation from here
+  md: 960px, // tablets landscape, small laptops: split auth layout starts here
+  lg: 1280px, // desktops
+);
+
+@mixin up($name) {
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}

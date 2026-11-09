@@ -1,0 +1,56 @@
+@use 'breakpoints' as bp;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-4);
+  padding: var(--jv-space-5);
+  border: var(--jv-border-width) solid var(--jv-color-border);
+  border-radius: var(--jv-radius-lg);
+  background: var(--jv-color-surface);
+
+  @include bp.up(sm) {
+    padding: var(--jv-space-6);
+  }
+}
+
+.title {
+  font-size: var(--jv-font-size-lg);
+}
+
+// Detail rows projected from the page.
+:host ::ng-deep .details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--jv-space-1) var(--jv-space-6);
+  margin: 0;
+
+  @include bp.up(sm) {
+    grid-template-columns: max-content minmax(0, 1fr);
+    row-gap: var(--jv-space-3);
+  }
+
+  dt {
+    color: var(--jv-color-text-muted);
+    font-size: var(--jv-font-size-sm);
+
+    &:not(:first-of-type) {
+      margin-top: var(--jv-space-3);
+
+      @include bp.up(sm) {
+        margin-top: 0;
+      }
+    }
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+  }
+
+  .not-set {
+    color: var(--jv-color-text-subtle);
+    font-style: italic;
+  }
+}

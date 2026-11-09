@@ -1,0 +1,170 @@
+<div class="page">
+  <app-page-header title="My profile" subtitle="Your account and how other businesses see you.">
+    @if (status() === 'ready') {
+      <div pageHeaderActions>
+        <a mat-flat-button routerLink="/profile/edit">
+          <mat-icon aria-hidden="true">edit</mat-icon>
+          Edit profile
+        </a>
+      </div>
+    }
+  </app-page-header>
+
+  @switch (status()) {
+    @case ('loading') {
+      <div class="skeleton-page" aria-busy="true">
+        <span class="jv-sr-only" role="status">Loading your profile…</span>
+        <div class="skeleton-card">
+          <app-skeleton shape="circle" />
+          <div class="skeleton-lines">
+            <app-skeleton shape="title" width="50%" />
+            <app-skeleton width="35%" />
+            <app-skeleton width="60%" />
+          </div>
+        </div>
+        <app-skeleton shape="block" />
+        <app-skeleton shape="block" />
+      </div>
+    }
+
+    @case ('error') {
+      <app-alert-banner type="error" title="Couldn't load your profile">
+        <p>{{ loadError() }}</p>
+        <button mat-button type="button" class="banner-action" (click)="load()">Retry</button>
+      </app-alert-banner>
+    }
+
+    @case ('ready') {
+      @if (profile(); as p) {
+        <app-profile-header-card
+          [fullName]="p.fullName"
+          [companyName]="p.company?.companyName ?? null"
+          [location]="location()"
+          [memberSince]="p.memberSince"
+          [roles]="roles()"
+          [isEmailVerified]="p.isEmailVerified"
+          [isGstinVerified]="p.company?.isGstinVerified ?? false"
+        >
+          <h2 profileTitle class="name">{{ p.fullName }}</h2>
+          @if (p.company && p.isEmailVerified) {
+            <div profileActions>
+              <a mat-stroked-button [routerLink]="['/profile', p.id]">
+                <mat-icon aria-hidden="true">visibility</mat-icon>
+                View public profile
+              </a>
+            </div>
+          }
+        </app-profile-header-card>
+
+        @if (!p.company) {
+          <app-alert-banner type="warning" title="Add your company details">
+            <p>Other businesses can't see your profile yet, and you need company details to buy or sell.</p>
+            <a mat-button class="banner-action" routerLink="/profile/edit">Add company details</a>
+          </app-alert-banner>
+        }
+
+        <div class="sections">
+          <app-profile-section title="Personal">
+            <dl class="details">
+              <dt>Full name</dt>
+              <dd>{{ p.fullName }}</dd>
+              <dt>Email</dt>
+              <dd>{{ p.email }}</dd>
+              <dt>Mobile</dt>
+              <dd>
+                @if (p.company) {
+                  +91 {{ p.company.mobile }}
+                } @else {
+                  <span class="not-set">Not added yet</span>
+                }
+              </dd>
+            </dl>
+          </app-profile-section>
+
+          <app-profile-section title="Company">
+            <dl class="details">
+              <dt>Company name</dt>
+              <dd>
+                @if (p.company) {
+                  {{ p.company.companyName }}
+                } @else {
+                  <span class="not-set">Not added yet</span>
+                }
+              </dd>
+              <dt>Location</dt>
+              <dd>
+                @if (location(); as place) {
+                  {{ place }}
+                } @else {
+                  <span class="not-set">Not added yet</span>
+                }
+              </dd>
+            </dl>
+          </app-profile-section>
+
+          <app-profile-section title="Business details">
+            <dl class="details">
+              <dt>GSTIN</dt>
+              <dd>
+                @if (p.company?.gstin; as gstin) {
+                  {{ gstin }}
+                } @else {
+                  <span class="not-set">Not added. Adding it helps buyers trust you.</span>
+                }
+              </dd>
+              <dt>About</dt>
+              <dd>
+                @if (p.company?.about; as about) {
+                  {{ about }}
+                } @else {
+                  <span class="not-set">No description yet. Tell others what your business does.</span>
+                }
+              </dd>
+            </dl>
+          </app-profile-section>
+
+          <app-profile-section title="Roles">
+            <div class="jv-stack">
+              <app-role-badges [roles]="roles()" />
+              <p class="jv-text-muted jv-text-small">
+                @if (auth.canSwitchMode()) {
+                  You buy and sell on JodVyapar. Choose which tools to show on this device.
+                } @else if (roleActions.missingRole() === 'Seller') {
+                  You buy on JodVyapar. Add the Seller role to list products too.
+                } @else if (roleActions.missingRole() === 'Buyer') {
+                  You sell on JodVyapar. Add the Buyer role to post requirements too.
+                } @else {
+                  Add your company details, then you can add the Buyer or Seller role.
+                }
+              </p>
+
+              @if (auth.canSwitchMode()) {
+                <div class="mode-row">
+                  <span class="mode-label" aria-hidden="true">Mode</span>
+                  <app-mode-switcher />
+                </div>
+              }
+
+              @if (roleActions.missingRole(); as role) {
+                <div>
+                  <app-primary-button
+                    [label]="'Add ' + role + ' role'"
+                    loadingLabel="Adding…"
+                    [loading]="roleActions.adding() === role"
+                    (click)="addRole()"
+                  />
+                </div>
+              }
+            </div>
+          </app-profile-section>
+
+          <!-- Phones have no user menu in reach of the thumb, so sign-out also lives here. -->
+          <button mat-stroked-button type="button" class="sign-out" (click)="auth.logout()">
+            <mat-icon aria-hidden="true">logout</mat-icon>
+            Sign out
+          </button>
+        </div>
+      }
+    }
+  }
+</div>

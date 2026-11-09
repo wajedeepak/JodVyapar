@@ -1,0 +1,45 @@
+<app-auth-layout>
+  @if (targetEmail()) {
+    <app-page-header title="Verify your email" [subtitle]="subtitle()" />
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="jv-stack">
+      @if (formError(); as message) {
+        <app-alert-banner type="error" [dismissible]="true" (dismissed)="formError.set(null)">
+          {{ message }}
+        </app-alert-banner>
+      }
+      @if (notice(); as message) {
+        <app-alert-banner type="info" [dismissible]="true" (dismissed)="notice.set(null)">
+          {{ message }}
+        </app-alert-banner>
+      }
+
+      <app-code-input
+        [control]="form.controls.code"
+        hint="The code expires 10 minutes after we send it."
+        [autofocus]="true"
+      />
+
+      <app-resend-code [secondsLeft]="cooldown.secondsLeft()" [sending]="resending()" (resend)="resend()" />
+
+      <app-primary-button
+        type="submit"
+        label="Verify and continue"
+        loadingLabel="Verifying…"
+        [loading]="submitting()"
+        [fullWidth]="true"
+      />
+    </form>
+  } @else {
+    <app-page-header title="Verify your email" />
+    <div class="jv-stack">
+      <app-alert-banner type="warning">
+        This link is missing your email address. Sign in with your email and password and we'll send you a new
+        verification code.
+      </app-alert-banner>
+      <a mat-button routerLink="/auth/login">Go to sign in</a>
+    </div>
+  }
+
+  <p class="jv-form-footer">Wrong email? <a routerLink="/auth/register">Create an account</a> or <a routerLink="/auth/login">sign in</a></p>
+</app-auth-layout>

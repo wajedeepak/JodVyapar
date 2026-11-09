@@ -1,0 +1,183 @@
+// JodVyapar design tokens. The only place raw colour / size values live.
+//
+// Two layers:
+//  1. Base scales (--jv-blue-*, --jv-grey-*, ...): raw values, never used directly by components.
+//  2. Semantic roles (--jv-color-*): what components use. A dark theme only needs to
+//     re-point these roles (see the commented block at the end).
+
+:root {
+  // ---- 1. Base scales -------------------------------------------------------------------
+  --jv-blue-50: #eef4fd;
+  --jv-blue-100: #d9e6fb;
+  --jv-blue-200: #b4cdf6;
+  --jv-blue-300: #84abee;
+  --jv-blue-400: #4f84e0;
+  --jv-blue-500: #2a68d1;
+  --jv-blue-600: #1556c0; // brand primary
+  --jv-blue-700: #1047a0;
+  --jv-blue-800: #0d3a82;
+  --jv-blue-900: #0b2c61;
+  --jv-blue-950: #081d40;
+
+  --jv-grey-0: #ffffff;
+  --jv-grey-25: #fbfcfe;
+  --jv-grey-50: #f5f7fa;
+  --jv-grey-100: #eceff4;
+  --jv-grey-200: #dde2ea;
+  --jv-grey-300: #c5ccd8;
+  --jv-grey-400: #9aa4b5;
+  --jv-grey-450: #8a94a6; // lightest grey with 3:1 on white (input borders)
+  --jv-grey-500: #6b7588;
+  --jv-grey-600: #525c6e;
+  --jv-grey-700: #3d4656;
+  --jv-grey-800: #283040;
+  --jv-grey-900: #161c28;
+
+  --jv-green-50: #ecfdf3;
+  --jv-green-200: #abefc6;
+  --jv-green-700: #157f3c;
+  --jv-amber-50: #fffaeb;
+  --jv-amber-200: #fedf89;
+  --jv-amber-700: #a14b06;
+  --jv-red-50: #fef3f2;
+  --jv-red-200: #fecdca;
+  --jv-red-700: #b42318;
+
+  // ---- 2. Semantic colours ---------------------------------------------------------------
+  --jv-color-primary: var(--jv-blue-600);
+  --jv-color-primary-hover: var(--jv-blue-700);
+  --jv-color-primary-pressed: var(--jv-blue-800);
+  --jv-color-primary-soft: var(--jv-blue-50); // tinted backgrounds (selected cards, info)
+  --jv-color-primary-border: var(--jv-blue-200);
+  --jv-color-on-primary: var(--jv-grey-0);
+
+  --jv-color-bg: var(--jv-grey-50); // page background
+  --jv-color-surface: var(--jv-grey-0); // cards, inputs
+  --jv-color-surface-muted: var(--jv-grey-25);
+  --jv-color-text: var(--jv-grey-900);
+  --jv-color-text-muted: var(--jv-grey-600); // 6.6:1 on white
+  --jv-color-text-subtle: var(--jv-grey-500); // 4.7:1 on white, placeholders / meta only
+  --jv-color-text-inverse: var(--jv-grey-0);
+  --jv-color-border: var(--jv-grey-200);
+  --jv-color-border-strong: var(--jv-grey-300);
+  --jv-color-border-input: var(--jv-grey-450); // WCAG 1.4.11 non-text contrast
+  --jv-color-disabled: var(--jv-grey-100);
+  --jv-color-skeleton: var(--jv-grey-100); // loading placeholders
+  --jv-color-skeleton-shine: var(--jv-grey-50);
+
+  --jv-color-success: var(--jv-green-700);
+  --jv-color-success-soft: var(--jv-green-50);
+  --jv-color-success-border: var(--jv-green-200);
+  --jv-color-warning: var(--jv-amber-700);
+  --jv-color-warning-soft: var(--jv-amber-50);
+  --jv-color-warning-border: var(--jv-amber-200);
+  --jv-color-error: var(--jv-red-700);
+  --jv-color-error-soft: var(--jv-red-50);
+  --jv-color-error-border: var(--jv-red-200);
+  --jv-color-info: var(--jv-blue-700);
+  --jv-color-info-soft: var(--jv-blue-50);
+  --jv-color-info-border: var(--jv-blue-200);
+
+  --jv-color-focus: var(--jv-blue-600);
+  --jv-color-on-brand-tint: rgb(255 255 255 / 12%); // icon tiles on the blue brand panel
+  --jv-color-on-brand-border: rgb(255 255 255 / 18%);
+  --jv-color-on-brand-muted: var(--jv-blue-100);
+  --jv-gradient-brand:
+    radial-gradient(120% 80% at 100% 0%, rgb(255 255 255 / 12%) 0%, transparent 60%),
+    linear-gradient(160deg, var(--jv-blue-600) 0%, var(--jv-blue-800) 60%, var(--jv-blue-900) 100%);
+
+  // ---- Typography ------------------------------------------------------------------------
+  --jv-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --jv-font-size-xs: 0.75rem; // 12
+  --jv-font-size-sm: 0.875rem; // 14
+  --jv-font-size-md: 1rem; // 16 (body)
+  --jv-font-size-lg: 1.125rem; // 18
+  --jv-font-size-xl: 1.25rem; // 20
+  --jv-font-size-2xl: 1.5rem; // 24
+  --jv-font-size-3xl: 1.875rem; // 30
+  --jv-font-size-4xl: 2.25rem; // 36
+  --jv-font-weight-regular: 400;
+  --jv-font-weight-medium: 500;
+  --jv-font-weight-semibold: 600;
+  --jv-font-weight-bold: 700;
+  --jv-line-height-tight: 1.2;
+  --jv-line-height-snug: 1.4;
+  --jv-line-height-normal: 1.6;
+  --jv-letter-spacing-tight: -0.02em;
+  --jv-letter-spacing-wide: 0.04em; // small uppercase labels
+
+  // ---- Spacing (4px base) ----------------------------------------------------------------
+  --jv-space-0: 0;
+  --jv-space-1: 0.25rem; // 4
+  --jv-space-2: 0.5rem; // 8
+  --jv-space-3: 0.75rem; // 12
+  --jv-space-4: 1rem; // 16
+  --jv-space-5: 1.25rem; // 20
+  --jv-space-6: 1.5rem; // 24
+  --jv-space-8: 2rem; // 32
+  --jv-space-10: 2.5rem; // 40
+  --jv-space-12: 3rem; // 48
+  --jv-space-16: 4rem; // 64
+
+  // ---- Shape, borders, elevation --------------------------------------------------------
+  --jv-radius-sm: 6px;
+  --jv-radius-md: 10px; // inputs, buttons
+  --jv-radius-lg: 14px; // cards
+  --jv-radius-xl: 20px;
+  --jv-radius-pill: 999px;
+  --jv-border-width: 1px;
+  --jv-border-width-strong: 2px;
+  --jv-focus-outline: 2px solid var(--jv-color-focus);
+  --jv-focus-outline-offset: 2px;
+
+  --jv-shadow-xs: 0 1px 2px rgb(22 28 40 / 6%);
+  --jv-shadow-sm: 0 1px 3px rgb(22 28 40 / 8%), 0 1px 2px rgb(22 28 40 / 4%);
+  --jv-shadow-md: 0 4px 12px rgb(22 28 40 / 8%), 0 2px 4px rgb(22 28 40 / 4%);
+  --jv-shadow-lg: 0 16px 40px rgb(22 28 40 / 10%), 0 4px 12px rgb(22 28 40 / 5%);
+
+  // ---- Sizes ----------------------------------------------------------------------------
+  --jv-icon-size-sm: 1.125rem;
+  --jv-icon-size-md: 1.5rem;
+  --jv-icon-size-lg: 2rem;
+  --jv-control-height: 3rem; // inputs and primary buttons
+  --jv-content-width: 60rem; // app pages
+  --jv-prose-width: 45rem; // long-form text
+  --jv-card-width: 28rem; // auth card (login)
+  --jv-card-width-wide: 38rem; // auth card (register)
+  --jv-brand-panel-width: 36rem; // auth layout brand panel (max)
+  --jv-top-bar-height: 4rem; // app shell header
+  --jv-tab-bar-height: 4rem; // app shell bottom tabs (phones), plus the safe-area inset
+  --jv-avatar-size-sm: 2rem;
+  --jv-avatar-size-md: 2.5rem;
+  --jv-avatar-size-lg: 4.5rem;
+
+  // ---- Motion ---------------------------------------------------------------------------
+  --jv-duration-fast: 120ms;
+  --jv-duration-base: 180ms;
+  --jv-duration-slow: 1400ms; // looping loaders (skeleton shimmer)
+  --jv-ease: cubic-bezier(0.2, 0, 0, 1);
+  --jv-transition-colors:
+    color var(--jv-duration-fast) var(--jv-ease), background-color var(--jv-duration-fast) var(--jv-ease),
+    border-color var(--jv-duration-fast) var(--jv-ease), box-shadow var(--jv-duration-fast) var(--jv-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --jv-duration-fast: 0ms;
+    --jv-duration-base: 0ms;
+    --jv-duration-slow: 0ms;
+  }
+}
+
+// Dark mode (not enabled yet). Re-point only the semantic roles, e.g.:
+// [data-theme='dark'] {
+//   color-scheme: dark;
+//   --jv-color-bg: var(--jv-grey-900);
+//   --jv-color-surface: var(--jv-grey-800);
+//   --jv-color-text: var(--jv-grey-50);
+//   --jv-color-text-muted: var(--jv-grey-300);
+//   --jv-color-border: var(--jv-grey-700);
+//   --jv-color-primary: var(--jv-blue-400);
+//   --jv-color-primary-soft: var(--jv-blue-950);
+//   ...
+// }

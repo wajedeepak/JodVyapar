@@ -1,0 +1,5 @@
+// Global styles entry point. Everything visual comes from the design system in src/styles/
+// (see STYLEGUIDE.md). Do not add page-specific styles here.
+@use 'styles/tokens';
+@use 'styles/material';
+@use 'styles/base';

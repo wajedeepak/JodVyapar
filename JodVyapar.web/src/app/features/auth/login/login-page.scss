@@ -1,0 +1,33 @@
+// Password / Email code switch: full width, two equal halves.
+.method {
+  display: flex;
+  width: 100%;
+  margin-bottom: var(--jv-space-5);
+
+  mat-button-toggle {
+    flex: 1;
+  }
+}
+
+// "Forgot password?" sits right under the password field, aligned to its right edge.
+.forgot {
+  margin: calc(-1 * var(--jv-space-2)) 0 0;
+  text-align: right;
+}
+
+.hint {
+  margin: calc(-1 * var(--jv-space-2)) 0 0;
+}
+
+// "Code sent to …" with "Change email" beside it; wraps on narrow screens.
+.sent-to {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--jv-space-1) var(--jv-space-2);
+
+  p {
+    margin: 0;
+  }
+}

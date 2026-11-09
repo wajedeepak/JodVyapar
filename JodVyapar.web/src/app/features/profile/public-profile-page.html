@@ -1,0 +1,104 @@
+<div class="page">
+  @switch (status()) {
+    @case ('loading') {
+      <div class="skeleton-page" aria-busy="true">
+        <span class="jv-sr-only" role="status">Loading profile…</span>
+        <div class="skeleton-card">
+          <app-skeleton shape="circle" />
+          <div class="skeleton-lines">
+            <app-skeleton shape="title" width="50%" />
+            <app-skeleton width="35%" />
+            <app-skeleton width="60%" />
+          </div>
+        </div>
+        <app-skeleton shape="block" />
+      </div>
+    }
+
+    @case ('not-found') {
+      <app-empty-state
+        icon="person_off"
+        title="Profile not found"
+        message="This business profile doesn't exist or is no longer available."
+        [headingLevel]="1"
+      >
+        <div emptyStateActions>
+          <a mat-flat-button routerLink="/">Go to home</a>
+        </div>
+      </app-empty-state>
+    }
+
+    @case ('error') {
+      <h1 class="jv-sr-only">Business profile</h1>
+      <app-alert-banner type="error" title="Couldn't load this profile">
+        <p>{{ loadError() }}</p>
+        <button mat-button type="button" class="banner-action" (click)="reload()">Retry</button>
+      </app-alert-banner>
+    }
+
+    @case ('ready') {
+      @if (profile(); as p) {
+        @if (isOwnProfile()) {
+          <app-alert-banner type="info">
+            <p>This is how other businesses see your profile.</p>
+            <a mat-button class="banner-action" routerLink="/profile/edit">Edit profile</a>
+          </app-alert-banner>
+        }
+
+        <app-profile-header-card
+          [fullName]="p.fullName"
+          [companyName]="p.companyName"
+          [location]="p.cityName + ', ' + p.stateName"
+          [memberSince]="p.memberSince"
+          [roles]="p.roles"
+          [isEmailVerified]="p.isEmailVerified"
+          [isGstinVerified]="p.isGstinVerified"
+        >
+          <h1 profileTitle class="name">{{ p.fullName }}</h1>
+          @if (!isOwnProfile()) {
+            <div profileActions class="message-action">
+              <button mat-flat-button type="button" disabled aria-describedby="message-hint">
+                <mat-icon aria-hidden="true">chat_bubble_outline</mat-icon>
+                Message
+              </button>
+              <span id="message-hint" class="message-hint">Coming soon</span>
+            </div>
+          }
+        </app-profile-header-card>
+
+        <div class="sections">
+          <app-profile-section title="About">
+            @if (p.about) {
+              <p class="about">{{ p.about }}</p>
+            } @else {
+              <p class="not-set">{{ p.companyName }} hasn't added a description yet.</p>
+            }
+          </app-profile-section>
+
+          <!-- Listings are added here when Catalog and Requirements exist (see the API's extension point). -->
+          @if (isSeller()) {
+            <app-profile-section title="Products">
+              <app-empty-state
+                icon="inventory_2"
+                title="No products to show yet"
+                message="Product listings are coming soon."
+                [compact]="true"
+              />
+            </app-profile-section>
+          }
+
+          @if (isBuyer()) {
+            <app-profile-section title="Requirements">
+              <app-empty-state
+                icon="assignment"
+                title="No requirements to show yet"
+                message="Buyer requirements are coming soon."
+                [compact]="true"
+              />
+            </app-profile-section>
+          }
+        </div>
+      }
+    }
+  }
+</div>

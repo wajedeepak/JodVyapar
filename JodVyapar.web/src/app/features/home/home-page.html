@@ -1,0 +1,53 @@
+<div class="jv-stack-lg">
+  <app-page-header [title]="greeting()" [subtitle]="subtitle()" />
+
+  @if (cards().length) {
+    <section aria-labelledby="actions-heading" class="jv-stack">
+      <h2 id="actions-heading" class="jv-sr-only">What would you like to do?</h2>
+      <ul class="cards">
+        @for (card of cards(); track card.link) {
+          <li>
+            <a class="action-card" [routerLink]="card.link">
+              <span class="icon-tile" aria-hidden="true"><mat-icon>{{ card.icon }}</mat-icon></span>
+              <span class="text">
+                <span class="title">{{ card.title }}</span>
+                <span class="description">{{ card.description }}</span>
+              </span>
+              <mat-icon class="arrow" aria-hidden="true">arrow_forward</mat-icon>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  } @else {
+    <!-- Admin-only account: no marketplace role yet. -->
+    <section class="prompt" aria-labelledby="admin-heading">
+      <mat-icon class="prompt-icon" aria-hidden="true">admin_panel_settings</mat-icon>
+      <div class="prompt-text">
+        <h2 id="admin-heading">Admin account</h2>
+        <p>Admin tools are on their way. To buy or sell as well, add your company details, then add a role.</p>
+      </div>
+      <div class="prompt-actions">
+        <a mat-flat-button routerLink="/admin">Open admin</a>
+        <a mat-stroked-button routerLink="/profile">Go to profile</a>
+      </div>
+    </section>
+  }
+
+  @if (prompt(); as p) {
+    <section class="prompt" aria-labelledby="prompt-heading">
+      <mat-icon class="prompt-icon" aria-hidden="true">{{ p.role === 'Seller' ? 'storefront' : 'shopping_bag' }}</mat-icon>
+      <div class="prompt-text">
+        <h2 id="prompt-heading">{{ p.title }}</h2>
+        <p>{{ p.text }}</p>
+      </div>
+      <app-primary-button
+        class="prompt-actions"
+        [label]="'Add ' + p.role + ' role'"
+        loadingLabel="Adding…"
+        [loading]="roleActions.adding() === p.role"
+        (click)="addMissingRole()"
+      />
+    </section>
+  }
+</div>

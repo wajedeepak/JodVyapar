@@ -1,0 +1,29 @@
+@for (option of options(); track option.value; let i = $index) {
+  <div
+    #card
+    class="card"
+    [attr.role]="cardRole()"
+    [class.selected]="isSelected(option)"
+    [attr.aria-checked]="isSelected(option)"
+    [attr.aria-disabled]="disabled() || null"
+    [attr.aria-labelledby]="id + '-' + i + '-title'"
+    [attr.aria-describedby]="option.description ? id + '-' + i + '-desc' : null"
+    [tabindex]="tabIndexFor(i)"
+    (click)="select(option)"
+    (keydown)="onKeydown($event, i)"
+    (blur)="onBlur()"
+  >
+    @if (option.icon) {
+      <span class="icon-tile" aria-hidden="true"><mat-icon>{{ option.icon }}</mat-icon></span>
+    }
+    <span class="text">
+      <span class="title" [id]="id + '-' + i + '-title'">{{ option.title }}</span>
+      @if (option.description) {
+        <span class="description" [id]="id + '-' + i + '-desc'">{{ option.description }}</span>
+      }
+    </span>
+    <mat-icon class="check" aria-hidden="true">{{
+      isSelected(option) ? (multiple() ? 'check_box' : 'check_circle') : (multiple() ? 'check_box_outline_blank' : 'radio_button_unchecked')
+    }}</mat-icon>
+  </div>
+}

@@ -1,0 +1,17 @@
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-6);
+}
+
+// A hairline between sections so the form reads as three short groups.
+app-form-section + app-form-section {
+  padding-top: var(--jv-space-6);
+  border-top: var(--jv-border-width) solid var(--jv-color-border);
+}
+
+.consent {
+  font-size: var(--jv-font-size-sm);
+  line-height: var(--jv-line-height-snug);
+  color: var(--jv-color-text-muted);
+}

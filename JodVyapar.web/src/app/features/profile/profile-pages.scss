@@ -1,0 +1,139 @@
+// Layout shared by the My Profile, Edit Profile and Public Profile pages.
+@use 'breakpoints' as bp;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-6);
+}
+
+.name {
+  font-size: var(--jv-font-size-2xl);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-4);
+}
+
+.banner-action {
+  --mat-button-text-horizontal-padding: var(--jv-space-2);
+  margin-top: var(--jv-space-2);
+  margin-left: calc(-1 * var(--jv-space-2));
+}
+
+.mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--jv-space-3);
+}
+
+.mode-label {
+  font-size: var(--jv-font-size-sm);
+  font-weight: var(--jv-font-weight-semibold);
+  color: var(--jv-color-text-muted);
+}
+
+.sign-out {
+  align-self: stretch;
+
+  @include bp.up(sm) {
+    align-self: flex-start;
+  }
+}
+
+// ---- Loading skeletons ------------------------------------------------------------------------
+.skeleton-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-4);
+}
+
+.skeleton-card {
+  display: flex;
+  align-items: center;
+  gap: var(--jv-space-5);
+  padding: var(--jv-space-6);
+  border: var(--jv-border-width) solid var(--jv-color-border);
+  border-radius: var(--jv-radius-lg);
+  background: var(--jv-color-surface);
+}
+
+.skeleton-lines {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--jv-space-3);
+}
+
+// ---- Edit form ----------------------------------------------------------------------------------
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-6);
+  padding: var(--jv-space-5);
+  border: var(--jv-border-width) solid var(--jv-color-border);
+  border-radius: var(--jv-radius-lg);
+  background: var(--jv-color-surface);
+
+  @include bp.up(sm) {
+    padding: var(--jv-space-6);
+  }
+
+  app-form-section + app-form-section {
+    padding-top: var(--jv-space-6);
+    border-top: var(--jv-border-width) solid var(--jv-color-border);
+  }
+}
+
+.read-only {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-1);
+
+  .label {
+    font-size: var(--jv-font-size-sm);
+    color: var(--jv-color-text-muted);
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--jv-space-3);
+
+  @include bp.up(sm) {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+// ---- Public profile ----------------------------------------------------------------------------
+.message-action {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--jv-space-1);
+}
+
+.message-hint {
+  font-size: var(--jv-font-size-xs);
+  color: var(--jv-color-text-muted);
+  text-align: center;
+}
+
+.about {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.not-set {
+  color: var(--jv-color-text-subtle);
+  font-style: italic;
+}

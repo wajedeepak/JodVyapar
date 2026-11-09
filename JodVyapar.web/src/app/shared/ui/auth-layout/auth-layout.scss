@@ -1,0 +1,184 @@
+@use 'breakpoints' as bp;
+
+// Mobile-first: brand header stacked above the form; side by side from `md`.
+:host {
+  --card-width: var(--jv-card-width);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--jv-color-bg);
+
+  @include bp.up(md) {
+    flex-direction: row;
+  }
+}
+
+:host(.wide) {
+  --card-width: var(--jv-card-width-wide);
+}
+
+// ---- Brand panel ------------------------------------------------------------------------
+.brand-panel {
+  background: var(--jv-gradient-brand);
+  color: var(--jv-color-text-inverse);
+  padding: var(--jv-space-6) var(--jv-space-5);
+
+  @include bp.up(md) {
+    flex: 0 0 42%;
+    max-width: var(--jv-brand-panel-width);
+    display: flex;
+    align-items: center;
+    padding: var(--jv-space-12) var(--jv-space-10);
+    // Keep the brand visible while a long form scrolls.
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  @include bp.up(lg) {
+    padding: var(--jv-space-16);
+  }
+}
+
+.brand-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-4);
+
+  @include bp.up(md) {
+    gap: var(--jv-space-10);
+  }
+}
+
+.logo {
+  align-self: flex-start;
+}
+
+.pitch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-2);
+
+  @include bp.up(md) {
+    gap: var(--jv-space-4);
+  }
+}
+
+.headline {
+  font-size: var(--jv-font-size-lg);
+  font-weight: var(--jv-font-weight-semibold);
+  line-height: var(--jv-line-height-tight);
+  letter-spacing: var(--jv-letter-spacing-tight);
+
+  @include bp.up(md) {
+    font-size: var(--jv-font-size-4xl);
+    font-weight: var(--jv-font-weight-bold);
+  }
+}
+
+.lead {
+  display: none;
+  color: var(--jv-color-on-brand-muted);
+  font-size: var(--jv-font-size-lg);
+  line-height: var(--jv-line-height-snug);
+
+  @include bp.up(md) {
+    display: block;
+  }
+}
+
+// Benefits only on the roomy desktop panel; phones get straight to the form.
+.benefits {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-direction: column;
+  gap: var(--jv-space-6);
+
+  @include bp.up(md) {
+    display: flex;
+  }
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--jv-space-4);
+  }
+}
+
+.benefit-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--jv-space-10);
+  height: var(--jv-space-10);
+  border-radius: var(--jv-radius-md);
+  background: var(--jv-color-on-brand-tint);
+  border: var(--jv-border-width) solid var(--jv-color-on-brand-border);
+}
+
+.benefit-title {
+  display: block;
+  font-weight: var(--jv-font-weight-semibold);
+}
+
+.benefit-text {
+  display: block;
+  color: var(--jv-color-on-brand-muted);
+  font-size: var(--jv-font-size-sm);
+  line-height: var(--jv-line-height-snug);
+}
+
+// ---- Form panel -------------------------------------------------------------------------
+.form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--jv-space-6);
+  padding: var(--jv-space-6) var(--jv-space-4) var(--jv-space-8);
+
+  @include bp.up(sm) {
+    padding: var(--jv-space-10) var(--jv-space-6);
+  }
+
+  @include bp.up(md) {
+    justify-content: center;
+    padding: var(--jv-space-12) var(--jv-space-8);
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: var(--card-width);
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-6);
+
+  // Phones: the form sits directly on the page (no boxed card) to use every pixel.
+  @include bp.up(sm) {
+    padding: var(--jv-space-8);
+    background: var(--jv-color-surface);
+    border: var(--jv-border-width) solid var(--jv-color-border);
+    border-radius: var(--jv-radius-xl);
+    box-shadow: var(--jv-shadow-md);
+  }
+
+  @include bp.up(md) {
+    padding: var(--jv-space-10);
+  }
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--jv-space-2) var(--jv-space-4);
+  color: var(--jv-color-text-muted);
+  font-size: var(--jv-font-size-sm);
+}

@@ -1,0 +1,34 @@
+<aside class="brand-panel" aria-label="About JodVyapar">
+  <div class="brand-inner">
+    <app-logo-mark class="logo" variant="inverse" size="lg" />
+
+    <div class="pitch">
+      <p class="headline">Connecting India's buyers and sellers.</p>
+      <p class="lead">Find the right business partners across India and talk to them directly.</p>
+    </div>
+
+    <ul class="benefits">
+      @for (benefit of benefits; track benefit.title) {
+        <li>
+          <span class="benefit-icon" aria-hidden="true"><mat-icon>{{ benefit.icon }}</mat-icon></span>
+          <span>
+            <span class="benefit-title">{{ benefit.title }}</span>
+            <span class="benefit-text">{{ benefit.text }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+</aside>
+
+<div class="form-panel">
+  <div class="card">
+    <ng-content />
+  </div>
+
+  <footer class="footer">
+    <span>&copy; {{ year }} JodVyapar</span>
+    <a routerLink="/legal/privacy">Privacy</a>
+    <a routerLink="/legal/terms">Terms</a>
+  </footer>
+</div>

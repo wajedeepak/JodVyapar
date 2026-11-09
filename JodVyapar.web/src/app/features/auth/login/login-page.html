@@ -1,0 +1,97 @@
+<app-auth-layout>
+  <app-page-header title="Sign in" subtitle="Welcome back. Sign in to continue to JodVyapar." />
+
+  <mat-button-toggle-group
+    class="method"
+    aria-label="How do you want to sign in?"
+    [hideSingleSelectionIndicator]="true"
+    [value]="method()"
+    (change)="setMethod($event.value)"
+  >
+    <mat-button-toggle value="password">Password</mat-button-toggle>
+    <mat-button-toggle value="code">Email code</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="jv-stack">
+    @if (formError(); as message) {
+      <app-alert-banner type="error" [dismissible]="true" (dismissed)="formError.set(null)">
+        {{ message }}
+      </app-alert-banner>
+    }
+    @if (notice(); as message) {
+      <app-alert-banner type="info" [dismissible]="true" (dismissed)="notice.set(null)">
+        {{ message }}
+      </app-alert-banner>
+    }
+
+    @if (codeSentTo(); as email) {
+      <!-- Email code, step 2: enter the code. -->
+      <div class="sent-to">
+        <p class="jv-text-small jv-text-muted">
+          If an account exists for <strong>{{ email }}</strong>, we've emailed it a 6-digit sign-in code.
+        </p>
+        <button mat-button type="button" (click)="changeEmail()">Change email</button>
+      </div>
+
+      <app-code-input
+        [control]="form.controls.code"
+        hint="The code expires 10 minutes after we send it."
+        [autofocus]="true"
+      />
+
+      <app-resend-code [secondsLeft]="cooldown.secondsLeft()" [sending]="resending()" (resend)="resend()" />
+
+      <app-primary-button
+        type="submit"
+        label="Sign in"
+        loadingLabel="Signing in…"
+        [loading]="submitting()"
+        [fullWidth]="true"
+      />
+    } @else {
+      <app-text-field
+        [control]="form.controls.email"
+        label="Email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        [errorMessages]="{ required: 'Please enter your email address.' }"
+        [autofocus]="true"
+      />
+
+      @if (method() === 'password') {
+        <app-password-input
+          [control]="form.controls.password"
+          autocomplete="current-password"
+          [errorMessages]="{ required: 'Please enter your password.' }"
+        />
+
+        <p class="forgot jv-text-small">
+          <a routerLink="/auth/forgot-password" [queryParams]="{ email: form.controls.email.value.trim() || null }">
+            Forgot password?
+          </a>
+        </p>
+
+        <app-primary-button
+          type="submit"
+          label="Sign in"
+          loadingLabel="Signing in…"
+          [loading]="submitting()"
+          [fullWidth]="true"
+        />
+      } @else {
+        <p class="jv-text-small jv-text-muted hint">We'll email you a 6-digit code. No password needed.</p>
+
+        <app-primary-button
+          type="submit"
+          label="Email me a code"
+          loadingLabel="Sending code…"
+          [loading]="submitting()"
+          [fullWidth]="true"
+        />
+      }
+    }
+  </form>
+
+  <p class="jv-form-footer">New to JodVyapar? <a routerLink="/auth/register">Create an account</a></p>
+</app-auth-layout>

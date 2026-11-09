@@ -1,0 +1,73 @@
+@use 'breakpoints' as bp;
+
+.user-button {
+  --mat-button-text-horizontal-padding: var(--jv-space-2);
+  --mat-button-text-label-text-color: var(--jv-color-text);
+}
+
+.user-button-content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--jv-space-2);
+}
+
+.user-first-name {
+  display: none;
+  max-width: var(--jv-space-16);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include bp.up(sm) {
+    display: inline;
+  }
+}
+
+.chevron {
+  width: var(--jv-icon-size-sm);
+  height: var(--jv-icon-size-sm);
+  margin: 0;
+  font-size: var(--jv-icon-size-sm);
+  color: var(--jv-color-text-muted);
+}
+
+// ---- User menu (rendered in an overlay, but declared here so these styles apply) -----------
+.menu-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--jv-space-3);
+  padding: var(--jv-space-3) var(--jv-space-4) var(--jv-space-4);
+}
+
+.menu-identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-1);
+  min-width: 0;
+}
+
+.menu-name {
+  font-weight: var(--jv-font-weight-semibold);
+  color: var(--jv-color-text);
+}
+
+.menu-company {
+  margin-bottom: var(--jv-space-1);
+  font-size: var(--jv-font-size-sm);
+  color: var(--jv-color-text-muted);
+}
+
+.menu-mode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-2);
+  padding: 0 var(--jv-space-4) var(--jv-space-4);
+}
+
+.menu-mode-label {
+  font-size: var(--jv-font-size-xs);
+  font-weight: var(--jv-font-weight-semibold);
+  color: var(--jv-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--jv-letter-spacing-wide);
+}

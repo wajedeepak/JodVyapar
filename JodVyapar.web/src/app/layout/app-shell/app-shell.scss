@@ -1,0 +1,199 @@
+@use 'breakpoints' as bp;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+// ---- Skip link: hidden until keyboard focus ------------------------------------------------
+.skip-link {
+  position: absolute;
+  top: var(--jv-space-2);
+  left: var(--jv-space-2);
+  z-index: 30;
+  padding: var(--jv-space-2) var(--jv-space-4);
+  border-radius: var(--jv-radius-md);
+  background: var(--jv-color-primary);
+  color: var(--jv-color-on-primary);
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}
+
+// ---- Top bar (all sizes; navigation inside it from `nav`) ----------------------------------
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-top: env(safe-area-inset-top);
+  border-bottom: var(--jv-border-width) solid var(--jv-color-border);
+  background: var(--jv-color-surface);
+}
+
+.top-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--jv-space-2);
+  max-width: var(--jv-content-width);
+  height: var(--jv-top-bar-height);
+  margin: 0 auto;
+  padding: 0 var(--jv-space-4);
+
+  @include bp.up(sm) {
+    padding: 0 var(--jv-space-6);
+  }
+}
+
+.brand {
+  display: inline-flex;
+  margin-right: var(--jv-space-4);
+  border-radius: var(--jv-radius-md);
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.spacer {
+  flex: 1;
+}
+
+.top-nav,
+.top-mode {
+  display: none;
+
+  @include bp.up(nav) {
+    display: flex;
+  }
+}
+
+.top-nav {
+  gap: var(--jv-space-1);
+}
+
+.top-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--jv-space-2);
+  padding: var(--jv-space-2) var(--jv-space-3);
+  border-radius: var(--jv-radius-md);
+  color: var(--jv-color-text-muted);
+  font-size: var(--jv-font-size-sm);
+  font-weight: var(--jv-font-weight-semibold);
+
+  mat-icon {
+    width: var(--jv-icon-size-sm);
+    height: var(--jv-icon-size-sm);
+    font-size: var(--jv-icon-size-sm);
+  }
+
+  &:hover {
+    background: var(--jv-color-surface-muted);
+    color: var(--jv-color-text);
+    text-decoration: none;
+  }
+
+  &.active {
+    background: var(--jv-color-primary-soft);
+    color: var(--jv-color-primary);
+  }
+}
+
+.top-mode {
+  margin-right: var(--jv-space-2);
+}
+
+// ---- Page content ---------------------------------------------------------------------------
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--jv-content-width);
+  margin: 0 auto;
+  // Leave room for the fixed tab bar (and the home-indicator area) on phones.
+  padding: var(--jv-space-4) var(--jv-space-4)
+    calc(var(--jv-tab-bar-height) + env(safe-area-inset-bottom) + var(--jv-space-6));
+
+  &:focus {
+    outline: none;
+  }
+
+  @include bp.up(sm) {
+    padding-left: var(--jv-space-6);
+    padding-right: var(--jv-space-6);
+  }
+
+  @include bp.up(nav) {
+    padding: var(--jv-space-8) var(--jv-space-6);
+  }
+}
+
+// ---- Bottom tab bar (phones only) -----------------------------------------------------------
+.tab-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: var(--jv-border-width) solid var(--jv-color-border);
+  background: var(--jv-color-surface);
+  box-shadow: var(--jv-shadow-md);
+
+  @include bp.up(nav) {
+    display: none;
+  }
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--jv-space-1);
+  min-width: 0;
+  height: var(--jv-tab-bar-height);
+  border-radius: 0;
+  color: var(--jv-color-text-muted);
+  font-size: var(--jv-font-size-xs);
+  font-weight: var(--jv-font-weight-medium);
+
+  &:hover {
+    text-decoration: none;
+    color: var(--jv-color-text);
+  }
+
+  // Active: colour, bolder label and a bar on top, so it isn't conveyed by colour alone.
+  &.active {
+    color: var(--jv-color-primary);
+    font-weight: var(--jv-font-weight-semibold);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 25%;
+      right: 25%;
+      height: var(--jv-border-width-strong);
+      border-radius: var(--jv-radius-pill);
+      background: var(--jv-color-primary);
+    }
+  }
+
+  &:focus-visible {
+    outline-offset: calc(-1 * var(--jv-border-width-strong));
+  }
+}
+
+.tab-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

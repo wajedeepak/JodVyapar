@@ -1,0 +1,164 @@
+// Global base styles: reset, type scale, focus, motion and a few layout utilities.
+// Utility classes are prefixed `jv-` so they are easy to tell apart from component classes.
+@use 'breakpoints' as bp;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  color-scheme: light;
+  margin: 0;
+  min-height: 100%;
+  background-color: var(--jv-color-bg);
+  color: var(--jv-color-text);
+  font-family: var(--jv-font-sans);
+  font-size: var(--jv-font-size-md);
+  line-height: var(--jv-line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ---- Type scale ---------------------------------------------------------------------------
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--jv-color-text);
+  font-weight: var(--jv-font-weight-bold);
+  line-height: var(--jv-line-height-tight);
+  letter-spacing: var(--jv-letter-spacing-tight);
+}
+
+h1 {
+  font-size: var(--jv-font-size-2xl);
+}
+
+h2 {
+  font-size: var(--jv-font-size-xl);
+}
+
+h3 {
+  font-size: var(--jv-font-size-lg);
+  font-weight: var(--jv-font-weight-semibold);
+}
+
+h4 {
+  font-size: var(--jv-font-size-md);
+  font-weight: var(--jv-font-weight-semibold);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--jv-color-primary);
+  font-weight: var(--jv-font-weight-medium);
+  text-decoration: none;
+  border-radius: var(--jv-radius-sm);
+  transition: var(--jv-transition-colors);
+
+  &:hover {
+    color: var(--jv-color-primary-hover);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+}
+
+// ---- Focus: one visible ring for every keyboard-focused element ----------------------------
+:focus-visible {
+  outline: var(--jv-focus-outline);
+  outline-offset: var(--jv-focus-outline-offset);
+}
+
+// ---- Motion -------------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ---- Utilities ----------------------------------------------------------------------------
+.jv-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.jv-text-muted {
+  color: var(--jv-color-text-muted);
+}
+
+.jv-text-small {
+  font-size: var(--jv-font-size-sm);
+  line-height: var(--jv-line-height-snug);
+}
+
+// Vertical rhythm for forms and page sections.
+.jv-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-4);
+}
+
+.jv-stack-lg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-8);
+}
+
+// Two columns from the `sm` breakpoint, one column on phones.
+.jv-grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--jv-space-4);
+  row-gap: var(--jv-space-4);
+}
+
+@include bp.up(sm) {
+  .jv-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+// Full-width Material form fields inside forms.
+.jv-stack .mat-mdc-form-field,
+.jv-grid-2 .mat-mdc-form-field {
+  width: 100%;
+}
+
+// Field-level error outside a mat-form-field (checkbox, choice cards).
+.jv-field-error {
+  margin: var(--jv-space-1) 0 0;
+  color: var(--jv-color-error);
+  font-size: var(--jv-font-size-xs);
+  line-height: var(--jv-line-height-snug);
+}
+
+// Centred "Already have an account? Sign in" style line under a form.
+.jv-form-footer {
+  margin: 0;
+  text-align: center;
+  color: var(--jv-color-text-muted);
+  font-size: var(--jv-font-size-sm);
+}

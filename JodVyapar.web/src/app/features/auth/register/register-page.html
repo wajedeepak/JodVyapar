@@ -1,0 +1,104 @@
+<app-auth-layout [wide]="true">
+  <app-page-header title="Create your business account" subtitle="Free for Indian businesses. It takes about a minute." />
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="register-form">
+    @if (formError(); as message) {
+      <app-alert-banner type="error" [dismissible]="true" (dismissed)="formError.set(null)">
+        {{ message }}
+      </app-alert-banner>
+    }
+
+    <app-form-section title="How will you use JodVyapar?" description="Choose one or both. You can add the other later.">
+      <app-choice-cards
+        formControlName="roles"
+        [options]="roleOptions"
+        [multiple]="true"
+        aria-label="I want to"
+        [aria-describedby]="form.controls.roles.touched && form.controls.roles.invalid ? 'roles-error' : ''"
+      />
+      @if (form.controls.roles.touched && form.controls.roles.invalid) {
+        <p id="roles-error" class="jv-field-error" role="alert">{{ error('roles') }}</p>
+      }
+    </app-form-section>
+
+    <app-form-section title="About you">
+      <div class="jv-grid-2">
+        <app-text-field
+          [control]="form.controls.fullName"
+          label="Full name"
+          autocomplete="name"
+          [maxlength]="100"
+          [errorMessages]="messages['fullName']"
+          [autofocus]="true"
+        />
+        <app-text-field
+          [control]="form.controls.mobile"
+          label="Mobile number"
+          type="tel"
+          inputmode="numeric"
+          prefix="+91"
+          autocomplete="tel-national"
+          [maxlength]="10"
+          [errorMessages]="messages['mobile']"
+        />
+      </div>
+    </app-form-section>
+
+    <app-form-section title="Your company">
+      <app-text-field
+        [control]="form.controls.companyName"
+        label="Company name"
+        autocomplete="organization"
+        [maxlength]="150"
+        [errorMessages]="messages['companyName']"
+      />
+
+      <app-state-city-fields [stateControl]="form.controls.stateId" [cityControl]="form.controls.cityId" />
+    </app-form-section>
+
+    <app-form-section title="Account" description="You'll sign in with this email.">
+      <app-text-field
+        [control]="form.controls.email"
+        label="Work email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        [maxlength]="256"
+        [errorMessages]="messages['email']"
+      />
+
+      <app-password-input
+        [control]="form.controls.password"
+        autocomplete="new-password"
+        [showRequirements]="true"
+        [errorMessages]="messages['password']"
+      />
+
+      <div class="consent">
+        <mat-checkbox
+          formControlName="consentAccepted"
+          [aria-describedby]="form.controls.consentAccepted.touched && form.controls.consentAccepted.invalid ? 'consent-error' : ''"
+        >
+          I agree to the
+          <a routerLink="/legal/terms" target="_blank" rel="noopener">Terms of Use<span class="jv-sr-only"> (opens in a new tab)</span></a>
+          and
+          <a routerLink="/legal/privacy" target="_blank" rel="noopener">Privacy Policy<span class="jv-sr-only"> (opens in a new tab)</span></a>,
+          and consent to JodVyapar processing my details to connect me with other businesses.
+        </mat-checkbox>
+        @if (form.controls.consentAccepted.touched && form.controls.consentAccepted.invalid) {
+          <p id="consent-error" class="jv-field-error" role="alert">{{ error('consentAccepted') }}</p>
+        }
+      </div>
+    </app-form-section>
+
+    <app-primary-button
+      type="submit"
+      label="Create account"
+      loadingLabel="Creating your account…"
+      [loading]="submitting()"
+      [fullWidth]="true"
+    />
+  </form>
+
+  <p class="jv-form-footer">Already registered? <a routerLink="/auth/login">Sign in</a></p>
+</app-auth-layout>
