@@ -1,0 +1,71 @@
+<div class="page">
+  <app-page-header title="My requirements" subtitle="What you're looking for. Each one stays live for 60 days.">
+    @if (status() === 'ready') {
+      <div pageHeaderActions>
+        <a mat-flat-button routerLink="/requirements/new">
+          <mat-icon aria-hidden="true">add</mat-icon>
+          Post requirement
+        </a>
+      </div>
+    }
+  </app-page-header>
+
+  @switch (status()) {
+    @case ('loading') {
+      <div class="listing-grid" aria-busy="true">
+        <span class="jv-sr-only" role="status">Loading your requirements…</span>
+        @for (card of [1, 2, 3]; track card) {
+          <app-skeleton shape="block" />
+        }
+      </div>
+    }
+
+    @case ('error') {
+      <app-alert-banner type="error" title="Couldn't load your requirements">
+        <p>{{ loadError() }}</p>
+        <button mat-button type="button" class="banner-action" (click)="reload()">Retry</button>
+      </app-alert-banner>
+    }
+
+    @case ('empty') {
+      <app-empty-state icon="assignment" title="No requirements yet" message="Tell sellers what you need and let them come to you.">
+        <div emptyStateActions>
+          <a mat-flat-button routerLink="/requirements/new">Post your first requirement</a>
+        </div>
+      </app-empty-state>
+    }
+
+    @case ('ready') {
+      <ul class="listing-grid">
+        @for (requirement of items(); track requirement.id) {
+          <li>
+            <app-listing-card
+              [title]="requirement.title"
+              [category]="requirement.parentCategoryName + ' › ' + requirement.categoryName"
+              [facts]="facts(requirement)"
+            >
+              <app-status-badge listingBadge [status]="requirement.status" />
+              <div listingActions>
+                @if (requirement.status !== 'Fulfilled') {
+                  <a mat-button [routerLink]="['/requirements', requirement.id, 'edit']">Edit</a>
+                }
+                @if (requirement.status === 'Active') {
+                  <button mat-button type="button" [disabled]="busyId() === requirement.id" (click)="pause(requirement)">Pause</button>
+                }
+                @if (requirement.status === 'Paused') {
+                  <button mat-button type="button" [disabled]="busyId() === requirement.id" (click)="activate(requirement)">Activate</button>
+                }
+                @if (requirement.status !== 'Fulfilled') {
+                  <button mat-button type="button" [disabled]="busyId() === requirement.id" (click)="renew(requirement)">Renew</button>
+                  <button mat-button type="button" [disabled]="busyId() === requirement.id" (click)="fulfill(requirement)">Mark fulfilled</button>
+                }
+                <button mat-button type="button" class="danger" [disabled]="busyId() === requirement.id" (click)="remove(requirement)">Delete</button>
+              </div>
+            </app-listing-card>
+          </li>
+        }
+      </ul>
+      <app-pager [page]="page()" [pageSize]="pageSize" [totalCount]="totalCount()" (pageChange)="goTo($event)" />
+    }
+  }
+</div>

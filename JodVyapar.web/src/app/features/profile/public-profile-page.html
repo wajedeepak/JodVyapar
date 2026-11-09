@@ -75,27 +75,12 @@
             }
           </app-profile-section>
 
-          <!-- Listings are added here when Catalog and Requirements exist (see the API's extension point). -->
           @if (isSeller()) {
-            <app-profile-section title="Products">
-              <app-empty-state
-                icon="inventory_2"
-                title="No products to show yet"
-                message="Product listings are coming soon."
-                [compact]="true"
-              />
-            </app-profile-section>
+            <app-public-products-section [userId]="p.id" [companyName]="p.companyName" />
           }
 
           @if (isBuyer()) {
-            <app-profile-section title="Requirements">
-              <app-empty-state
-                icon="assignment"
-                title="No requirements to show yet"
-                message="Buyer requirements are coming soon."
-                [compact]="true"
-              />
-            </app-profile-section>
+            <app-public-requirements-section [userId]="p.id" [companyName]="p.companyName" />
           }
         </div>
       }

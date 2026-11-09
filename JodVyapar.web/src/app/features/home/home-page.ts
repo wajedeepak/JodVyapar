@@ -1,21 +1,27 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { catchError, of, switchMap } from 'rxjs';
 
 import { ActiveMode } from '../../core/auth/auth.models';
 import { AuthService } from '../../core/auth/auth.service';
+import { ProductService } from '../../core/listings/product.service';
+import { RequirementService } from '../../core/listings/requirement.service';
 import { RoleActions } from '../../core/profile/role-actions.service';
-import { PageHeader, PrimaryButton } from '../../shared/ui';
+import { Badge, PageHeader, PrimaryButton } from '../../shared/ui';
 
 export interface ActionCard {
   title: string;
   description: string;
   icon: string;
   link: string;
+  /** Shows how many of the user's listings are live. */
+  showsActiveCount?: boolean;
 }
 
-/** What Home offers in each mode. Links go to placeholders until the features exist. */
+/** What Home offers in each mode. Search and browsing are placeholders until those features exist. */
 export const MODE_ACTIONS: Record<ActiveMode, readonly ActionCard[]> = {
   Buyer: [
     { title: 'Search products', description: 'Find suppliers by product, city and state.', icon: 'search', link: '/search' },
@@ -25,9 +31,23 @@ export const MODE_ACTIONS: Record<ActiveMode, readonly ActionCard[]> = {
       icon: 'post_add',
       link: '/requirements/new',
     },
+    {
+      title: 'My requirements',
+      description: 'Edit, pause or renew what you have posted.',
+      icon: 'assignment_turned_in',
+      link: '/my/requirements',
+      showsActiveCount: true,
+    },
   ],
   Seller: [
     { title: 'Add a product', description: 'List what you sell so buyers can find you.', icon: 'add_box', link: '/products/new' },
+    {
+      title: 'My products',
+      description: 'Edit, pause or remove what you have listed.',
+      icon: 'inventory_2',
+      link: '/my/products',
+      showsActiveCount: true,
+    },
     {
       title: 'Browse buyer requirements',
       description: 'See what buyers are looking for right now.',
@@ -51,7 +71,7 @@ function greetingFor(hour: number): string {
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink, MatButtonModule, MatIcon, PageHeader, PrimaryButton],
+  imports: [RouterLink, MatButtonModule, MatIcon, Badge, PageHeader, PrimaryButton],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +79,22 @@ function greetingFor(hour: number): string {
 export class HomePage {
   protected readonly auth = inject(AuthService);
   protected readonly roleActions = inject(RoleActions);
+  private readonly products = inject(ProductService);
+  private readonly requirements = inject(RequirementService);
+
+  /** Live listings for the active mode; null while loading or if it failed (the card just shows no count). */
+  protected readonly activeCount = toSignal(
+    toObservable(this.auth.activeMode).pipe(
+      switchMap((mode) => {
+        if (!mode) {
+          return of(null);
+        }
+        const count = mode === 'Seller' ? this.products.countActive() : this.requirements.countActive();
+        return count.pipe(catchError(() => of(null)));
+      }),
+    ),
+    { initialValue: null },
+  );
 
   protected readonly greeting = computed(() => {
     const firstName = this.auth.currentUser()?.fullName.trim().split(/\s+/)[0];

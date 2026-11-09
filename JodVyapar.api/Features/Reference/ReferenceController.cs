@@ -22,6 +22,11 @@ public sealed class ReferenceController(ReferenceService referenceService) : Con
     public async Task<ActionResult<IReadOnlyList<CityDto>>> GetCities([FromQuery] CityQuery query, CancellationToken cancellationToken) =>
         Ok(await referenceService.GetCitiesAsync(query.StateId!.Value, cancellationToken));
 
+    /// <summary>Active units of measure for prices and quantities.</summary>
+    [HttpGet("units")]
+    public async Task<ActionResult<IReadOnlyList<UnitDto>>> GetUnits(CancellationToken cancellationToken) =>
+        Ok(await referenceService.GetUnitsAsync(cancellationToken));
+
     /// <summary>Active category tree: top-level categories with their subcategories.</summary>
     [HttpGet("categories")]
     public async Task<ActionResult<IReadOnlyList<CategoryDto>>> GetCategories(CancellationToken cancellationToken) =>

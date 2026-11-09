@@ -8,12 +8,16 @@ namespace JodVyapar.Api.Common.Activity;
 public static class ActivityEventTypes
 {
     public const string ProfileViewed = "ProfileViewed";
+    public const string ProductCreated = "ProductCreated";
+    public const string RequirementCreated = "RequirementCreated";
 }
 
 /// <summary>What an event is about, stored in ActivityEvents.TargetType (max 50 characters).</summary>
 public static class ActivityTargetTypes
 {
     public const string User = "User";
+    public const string Product = "Product";
+    public const string Requirement = "Requirement";
 }
 
 /// <summary>

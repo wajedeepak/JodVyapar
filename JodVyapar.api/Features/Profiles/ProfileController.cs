@@ -1,5 +1,8 @@
 using JodVyapar.Api.Common;
+using JodVyapar.Api.Common.Paging;
+using JodVyapar.Api.Features.Catalog;
 using JodVyapar.Api.Features.Identity;
+using JodVyapar.Api.Features.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +13,10 @@ namespace JodVyapar.Api.Features.Profiles;
 [Authorize]
 [Route(ApiRoutes.Prefix + "/profile")]
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-public sealed class ProfileController(ProfileService profileService) : ControllerBase
+public sealed class ProfileController(
+    ProfileService profileService,
+    ProductService productService,
+    RequirementService requirementService) : ControllerBase
 {
     /// <summary>The signed-in user's full profile: roles, email, mobile, GSTIN, about and verification flags.</summary>
     [HttpGet("me")]
@@ -87,8 +93,29 @@ public sealed class ProfileController(ProfileService profileService) : Controlle
         }
 
         var profile = await profileService.GetPublicProfileAsync(viewerId, userId, cancellationToken);
-        return profile is null
-            ? Problem(statusCode: StatusCodes.Status404NotFound, title: "Profile not found.", detail: "This profile doesn't exist or is no longer available.")
-            : Ok(profile);
+        return profile is null ? ProfileNotFound() : Ok(profile);
     }
+
+    /// <summary>A user's Active products, newest first. No contact details. 404 when the profile isn't public.</summary>
+    [HttpGet("{userId:guid}/products")]
+    [ProducesResponseType<PagedResult<PublicProductDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPublicProducts(Guid userId, [FromQuery] PublicListQuery query, CancellationToken cancellationToken) =>
+        await profileService.IsPublicAsync(userId, cancellationToken)
+            ? Ok(await productService.GetPublicAsync(userId, query, cancellationToken))
+            : ProfileNotFound();
+
+    /// <summary>A user's Active, unexpired requirements, newest first. No contact details. 404 when the profile isn't public.</summary>
+    [HttpGet("{userId:guid}/requirements")]
+    [ProducesResponseType<PagedResult<PublicRequirementDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPublicRequirements(Guid userId, [FromQuery] PublicListQuery query, CancellationToken cancellationToken) =>
+        await profileService.IsPublicAsync(userId, cancellationToken)
+            ? Ok(await requirementService.GetPublicAsync(userId, query, cancellationToken))
+            : ProfileNotFound();
+
+    private ObjectResult ProfileNotFound() =>
+        Problem(statusCode: StatusCodes.Status404NotFound, title: "Profile not found.", detail: "This profile doesn't exist or is no longer available.");
 }

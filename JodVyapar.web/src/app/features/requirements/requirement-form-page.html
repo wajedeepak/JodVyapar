@@ -1,0 +1,114 @@
+<div class="page">
+  @if (status() !== 'not-found') {
+    <app-page-header [title]="isEdit ? 'Edit requirement' : 'Post a requirement'" subtitle="Tell sellers what you need. It stays live for 60 days." />
+  }
+
+  @switch (status()) {
+    @case ('loading') {
+      <div class="form-card" aria-busy="true">
+        <span class="jv-sr-only" role="status">Loading…</span>
+        @for (row of [1, 2, 3, 4, 5]; track row) {
+          <app-skeleton shape="title" [width]="row % 2 ? '100%' : '70%'" />
+        }
+      </div>
+    }
+
+    @case ('not-found') {
+      <app-empty-state
+        icon="search_off"
+        title="Requirement not found"
+        message="This requirement doesn't exist or is no longer available."
+        [headingLevel]="1"
+      >
+        <div emptyStateActions>
+          <a mat-flat-button routerLink="/my/requirements">Back to my requirements</a>
+        </div>
+      </app-empty-state>
+    }
+
+    @case ('error') {
+      <app-alert-banner type="error" title="Couldn't load this page">
+        <p>{{ loadError() }}</p>
+        <button mat-button type="button" class="banner-action" (click)="load()">Retry</button>
+      </app-alert-banner>
+    }
+
+    @case ('ready') {
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate class="form-card">
+        @if (formError(); as message) {
+          <app-alert-banner type="error" [dismissible]="true" (dismissed)="formError.set(null)">{{ message }}</app-alert-banner>
+        }
+
+        <div class="fields">
+          <app-text-field
+            [control]="form.controls.title"
+            label="What do you need?"
+            [maxlength]="titleMaxLength"
+            [errorMessages]="messages['title']"
+            [autofocus]="true"
+          />
+
+          <app-category-fields [parentControl]="form.controls.parentCategoryId" [categoryControl]="form.controls.categoryId" />
+
+          <div class="jv-grid-2">
+            <app-text-field
+              [control]="form.controls.quantity"
+              label="Quantity"
+              inputmode="decimal"
+              [errorMessages]="messages['quantity']"
+            />
+            <app-unit-field [control]="form.controls.unitId" />
+          </div>
+
+          <app-state-city-fields [stateControl]="form.controls.stateId" [cityControl]="form.controls.cityId" />
+        </div>
+
+        <mat-expansion-panel [expanded]="moreOpen()" (expandedChange)="moreOpen.set($event)">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="more-title">More details</mat-panel-title>
+            <mat-panel-description>Optional</mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="fields">
+            <div class="jv-grid-2">
+              <app-text-field
+                [control]="form.controls.budgetMin"
+                label="Budget from"
+                inputmode="decimal"
+                prefix="₹"
+                [errorMessages]="messages['budgetMin']"
+              />
+              <app-text-field
+                [control]="form.controls.budgetMax"
+                label="Budget up to"
+                inputmode="decimal"
+                prefix="₹"
+                [errorMessages]="messages['budgetMax']"
+              />
+            </div>
+
+            <mat-form-field class="full-width">
+              <mat-label>Needed by</mat-label>
+              <input matInput type="date" formControlName="neededBy" [attr.min]="today" />
+              <mat-error>{{ error('neededBy') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Short description</mat-label>
+              <textarea matInput formControlName="description" rows="4" [attr.maxlength]="descriptionMaxLength"></textarea>
+              <mat-hint align="end">{{ form.controls.description.value.length }} / {{ descriptionMaxLength }}</mat-hint>
+              <mat-error>{{ error('description') }}</mat-error>
+            </mat-form-field>
+
+            <app-keyword-chips-field [control]="form.controls.keywords" />
+          </div>
+        </mat-expansion-panel>
+
+        <div class="form-actions">
+          <a mat-stroked-button routerLink="/my/requirements">Cancel</a>
+          <app-primary-button type="submit" [label]="isEdit ? 'Save changes' : 'Post requirement'" loadingLabel="Saving…" [loading]="saving()" />
+        </div>
+      </form>
+    }
+  }
+</div>

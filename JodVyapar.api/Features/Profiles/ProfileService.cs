@@ -181,9 +181,6 @@ public sealed class ProfileService(
         // Only marketplace roles are public; an Admin role is never advertised.
         var roles = (await GetRolesAsync(userId, cancellationToken)).Where(r => r != AppRoles.Admin).ToList();
 
-        // EXTENSION POINT: when Catalog and Requirements exist, add the user's active products (if they
-        // hold Seller) and open requirements (if they hold Buyer) here, as summary DTOs on PublicProfileDto.
-
         if (viewerUserId != userId)
         {
             await activityLogger.LogAsync(ActivityEventTypes.ProfileViewed, viewerUserId, ActivityTargetTypes.User, userId, cancellationToken);
@@ -201,6 +198,10 @@ public sealed class ProfileService(
             profile.IsGstinVerified,
             profile.CreatedAt);
     }
+
+    /// <summary>Whether the user's public profile and listings can be shown (same rule as <see cref="GetPublicProfileAsync"/>).</summary>
+    public Task<bool> IsPublicAsync(Guid userId, CancellationToken cancellationToken) =>
+        db.Users.AnyAsync(u => u.Id == userId && !u.IsDeleted && u.EmailConfirmed && u.CompanyProfile != null, cancellationToken);
 
     private async Task<IReadOnlyList<string>> GetRolesAsync(Guid userId, CancellationToken cancellationToken)
     {

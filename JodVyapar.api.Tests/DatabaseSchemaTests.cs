@@ -29,6 +29,7 @@ public sealed class DatabaseSchemaTests(ApiFactory factory)
             actual.AddRange(await db.Database.SqlQueryRaw<Column>("""
                 SELECT TABLE_NAME AS [Table], COLUMN_NAME AS Name,
                        LOWER(DATA_TYPE + CASE
+                           WHEN DATA_TYPE = 'decimal' THEN '(' + CAST(NUMERIC_PRECISION AS varchar(10)) + ',' + CAST(NUMERIC_SCALE AS varchar(10)) + ')'
                            WHEN CHARACTER_MAXIMUM_LENGTH = -1 THEN '(max)'
                            WHEN CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN '(' + CAST(CHARACTER_MAXIMUM_LENGTH AS varchar(10)) + ')'
                            ELSE '' END) AS Type,
@@ -58,17 +59,18 @@ public sealed class DatabaseSchemaTests(ApiFactory factory)
         }
 
         Assert.Equal(before, await CountReferenceRowsAsync());
-        Assert.Equal((3, 36, 161, 47), before);
+        Assert.Equal((3, 36, 161, 47, 14), before);
     }
 
-    private async Task<(int Roles, int States, int Cities, int Categories)> CountReferenceRowsAsync()
+    private async Task<(int Roles, int States, int Cities, int Categories, int Units)> CountReferenceRowsAsync()
     {
-        var counts = (0, 0, 0, 0);
+        var counts = (0, 0, 0, 0, 0);
         await factory.WithDbAsync(async db => counts = (
             await db.Roles.CountAsync(),
             await db.Set<State>().CountAsync(),
             await db.Set<City>().CountAsync(),
-            await db.Set<Category>().CountAsync()));
+            await db.Set<Category>().CountAsync(),
+            await db.Set<Unit>().CountAsync()));
         return counts;
     }
 }

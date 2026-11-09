@@ -24,6 +24,9 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public FakeEmailSender Emails { get; } = new();
 
+    /// <summary>Throwaway folder for uploaded files; removed when the run ends.</summary>
+    public string UploadRoot { get; } = Path.Combine(Path.GetTempPath(), $"JodVyapar_Tests_{Guid.NewGuid():N}");
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
@@ -32,6 +35,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting("Otp:HmacKey", "integration-tests-otp-hmac-key-not-a-real-secret-0123456789");
         builder.UseSetting("Email:Provider", "Smtp");
         builder.UseSetting("Email:Smtp:Host", "localhost");
+        builder.UseSetting("FileStorage:RootPath", UploadRoot);
 
         // Every test client shares one IP; keep the per-IP limiter out of the way.
         builder.UseSetting("RateLimiting:Auth:PermitLimit", "100000");
@@ -77,6 +81,11 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         using (var scope = Services.CreateScope())
         {
             await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.EnsureDeletedAsync();
+        }
+
+        if (Directory.Exists(UploadRoot))
+        {
+            Directory.Delete(UploadRoot, recursive: true);
         }
 
         await DisposeAsync();

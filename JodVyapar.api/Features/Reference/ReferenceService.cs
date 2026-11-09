@@ -20,6 +20,15 @@ public sealed class ReferenceService(AppDbContext db)
             .Select(c => new CityDto(c.Id, c.StateId, c.Name))
             .ToListAsync(cancellationToken);
 
+    /// <summary>Active units in display order.</summary>
+    public async Task<IReadOnlyList<UnitDto>> GetUnitsAsync(CancellationToken cancellationToken) =>
+        await db.Set<Unit>()
+            .AsNoTracking()
+            .Where(u => u.IsActive)
+            .OrderBy(u => u.SortOrder).ThenBy(u => u.Name)
+            .Select(u => new UnitDto(u.Id, u.Name, u.Symbol))
+            .ToListAsync(cancellationToken);
+
     /// <summary>Active top-level categories with their active subcategories.</summary>
     public async Task<IReadOnlyList<CategoryDto>> GetCategoryTreeAsync(CancellationToken cancellationToken)
     {

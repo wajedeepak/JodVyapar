@@ -1,7 +1,9 @@
 import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
+import { environment } from '../../../environments/environment';
 import { UserRole } from '../../core/auth/auth.models';
 import { AuthService } from '../../core/auth/auth.service';
 import { storeTestSession } from '../../testing/session';
@@ -11,7 +13,7 @@ describe('HomePage', () => {
   function setup(roles: UserRole[]) {
     localStorage.clear();
     storeTestSession(roles);
-    TestBed.configureTestingModule({ providers: [provideRouter([]), provideHttpClient()] });
+    TestBed.configureTestingModule({ providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()] });
     const fixture = TestBed.createComponent(HomePage);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
@@ -31,12 +33,14 @@ describe('HomePage', () => {
     expect(setup(['Buyer']).cards()).toEqual([
       { title: 'Search products', href: '/search' },
       { title: 'Post a requirement', href: '/requirements/new' },
+      { title: 'My requirements', href: '/my/requirements' },
     ]);
   });
 
   it('shows seller actions in Selling mode', () => {
     expect(setup(['Seller']).cards()).toEqual([
       { title: 'Add a product', href: '/products/new' },
+      { title: 'My products', href: '/my/products' },
       { title: 'Browse buyer requirements', href: '/requirements' },
     ]);
   });
@@ -56,6 +60,35 @@ describe('HomePage', () => {
     const { el } = setup(['Buyer']);
     expect(el.querySelector('#prompt-heading')?.textContent).toContain('Selling too?');
     expect(el.querySelector('app-primary-button')?.textContent).toContain('Add Seller role');
+  });
+
+  it('shows how many listings are live for the active mode, following the mode switch', () => {
+    const { fixture, el, auth } = setup(['Buyer', 'Seller']);
+    const http = TestBed.inject(HttpTestingController);
+    const api = environment.apiBaseUrl;
+
+    TestBed.tick();
+    const buyerCount = http.expectOne((r) => r.url === `${api}/requirements/mine`);
+    expect(buyerCount.request.params.get('status')).toBe('Active');
+    buyerCount.flush({ items: [], page: 1, pageSize: 1, totalCount: 4 });
+    fixture.detectChanges();
+    expect(el.querySelector('.count')?.textContent).toContain('4 active');
+
+    auth.setMode('Seller');
+    TestBed.tick();
+    http.expectOne((r) => r.url === `${api}/products/mine`).flush({ items: [], page: 1, pageSize: 1, totalCount: 2 });
+    fixture.detectChanges();
+    expect(el.querySelector('.count')?.textContent).toContain('2 active');
+  });
+
+  it('hides the count when it cannot be loaded', () => {
+    const { fixture, el } = setup(['Seller']);
+    TestBed.tick();
+    TestBed.inject(HttpTestingController)
+      .expectOne((r) => r.url.endsWith('/products/mine'))
+      .flush({}, { status: 500, statusText: 'Server Error' });
+    fixture.detectChanges();
+    expect(el.querySelector('.count')).toBeNull();
   });
 
   it('points Admin-only accounts to the admin page and profile instead of mode cards', () => {

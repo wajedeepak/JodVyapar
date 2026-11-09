@@ -24,8 +24,14 @@ export interface Category {
   children: Category[];
 }
 
+export interface Unit {
+  id: string;
+  name: string;
+  symbol: string;
+}
+
 /**
- * Lookup data (states, cities, categories). Each response is fetched once per app session
+ * Lookup data (states, cities, categories, units). Each response is fetched once per app session
  * and shared; a failed request is dropped from the cache so the next call retries.
  */
 @Injectable({ providedIn: 'root' })
@@ -46,6 +52,10 @@ export class ReferenceDataService {
 
   getCategories(): Observable<Category[]> {
     return this.cached('categories', () => this.http.get<Category[]>(`${this.baseUrl}/categories`));
+  }
+
+  getUnits(): Observable<Unit[]> {
+    return this.cached('units', () => this.http.get<Unit[]>(`${this.baseUrl}/units`));
   }
 
   private cached<T>(key: string, request: () => Observable<T>): Observable<T> {

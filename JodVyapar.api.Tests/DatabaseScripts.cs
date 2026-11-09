@@ -11,9 +11,12 @@ public static partial class DatabaseScripts
             .Where(path => NumberedScript().IsMatch(Path.GetFileName(path)) && !Path.GetFileName(path).StartsWith("99_", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal);
 
-    /// <summary>Splits a script on its GO lines, as SSMS and sqlcmd do.</summary>
+    /// <summary>
+    /// Splits a script on its GO lines, as SSMS and sqlcmd do. "USE database" batches are skipped so
+    /// a script that names a real database still runs against the throwaway test database.
+    /// </summary>
     public static IEnumerable<string> Batches(string path) =>
-        GoLine().Split(File.ReadAllText(path)).Where(batch => !string.IsNullOrWhiteSpace(batch));
+        GoLine().Split(File.ReadAllText(path)).Where(batch => !string.IsNullOrWhiteSpace(batch) && !UseBatch().IsMatch(batch));
 
     private static string Folder()
     {
@@ -28,6 +31,9 @@ public static partial class DatabaseScripts
 
         throw new DirectoryNotFoundException("Could not find the repo's Database folder.");
     }
+
+    [GeneratedRegex(@"^\s*USE\s+\[?\w+\]?\s*;?\s*$", RegexOptions.IgnoreCase)]
+    private static partial Regex UseBatch();
 
     [GeneratedRegex(@"^\d{2}_.+\.sql$")]
     private static partial Regex NumberedScript();

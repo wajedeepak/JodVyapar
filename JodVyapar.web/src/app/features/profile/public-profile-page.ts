@@ -14,6 +14,8 @@ import { ProfileService } from '../../core/profile/profile.service';
 import { AlertBanner, EmptyState, Skeleton } from '../../shared/ui';
 import { ProfileHeaderCard } from './profile-header-card';
 import { ProfileSection } from './profile-section';
+import { PublicProductsSection } from './public-products-section';
+import { PublicRequirementsSection } from './public-requirements-section';
 
 type LoadStatus = 'loading' | 'ready' | 'not-found' | 'error';
 
@@ -25,7 +27,18 @@ type LoadResult =
 /** /profile/:userId: what other businesses see. No email, mobile or GSTIN number (the API never sends them). */
 @Component({
   selector: 'app-public-profile-page',
-  imports: [RouterLink, MatButtonModule, MatIcon, AlertBanner, EmptyState, Skeleton, ProfileHeaderCard, ProfileSection],
+  imports: [
+    RouterLink,
+    MatButtonModule,
+    MatIcon,
+    AlertBanner,
+    EmptyState,
+    Skeleton,
+    ProfileHeaderCard,
+    ProfileSection,
+    PublicProductsSection,
+    PublicRequirementsSection,
+  ],
   templateUrl: './public-profile-page.html',
   styleUrl: './profile-pages.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,0 +1,110 @@
+<div class="page">
+  @if (status() !== 'not-found') {
+    <app-page-header [title]="isEdit ? 'Edit product' : 'Add a product'" subtitle="Keep it short. You can add more details later." />
+  }
+
+  @switch (status()) {
+    @case ('loading') {
+      <div class="form-card" aria-busy="true">
+        <span class="jv-sr-only" role="status">Loading…</span>
+        @for (row of [1, 2, 3, 4, 5]; track row) {
+          <app-skeleton shape="title" [width]="row % 2 ? '100%' : '70%'" />
+        }
+      </div>
+    }
+
+    @case ('not-found') {
+      <app-empty-state
+        icon="search_off"
+        title="Product not found"
+        message="This product doesn't exist or is no longer available."
+        [headingLevel]="1"
+      >
+        <div emptyStateActions>
+          <a mat-flat-button routerLink="/my/products">Back to my products</a>
+        </div>
+      </app-empty-state>
+    }
+
+    @case ('error') {
+      <app-alert-banner type="error" title="Couldn't load this page">
+        <p>{{ loadError() }}</p>
+        <button mat-button type="button" class="banner-action" (click)="load()">Retry</button>
+      </app-alert-banner>
+    }
+
+    @case ('ready') {
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate class="form-card">
+        @if (formError(); as message) {
+          <app-alert-banner type="error" [dismissible]="true" (dismissed)="formError.set(null)">{{ message }}</app-alert-banner>
+        }
+
+        <div class="fields">
+          <app-text-field
+            [control]="form.controls.title"
+            label="Product name"
+            [maxlength]="titleMaxLength"
+            [errorMessages]="messages['title']"
+            [autofocus]="true"
+          />
+
+          <app-category-fields [parentControl]="form.controls.parentCategoryId" [categoryControl]="form.controls.categoryId" />
+
+          <div class="jv-grid-2">
+            <app-text-field
+              [control]="form.controls.priceMin"
+              label="Price from"
+              inputmode="decimal"
+              prefix="₹"
+              [errorMessages]="messages['priceMin']"
+            />
+            <app-text-field
+              [control]="form.controls.priceMax"
+              label="Price up to (optional)"
+              inputmode="decimal"
+              prefix="₹"
+              [errorMessages]="messages['priceMax']"
+            />
+            <app-unit-field [control]="form.controls.unitId" />
+            <app-text-field
+              [control]="form.controls.minOrderQty"
+              label="Minimum order quantity"
+              inputmode="decimal"
+              [errorMessages]="messages['minOrderQty']"
+            />
+          </div>
+
+          <app-state-city-fields [stateControl]="form.controls.stateId" [cityControl]="form.controls.cityId" />
+        </div>
+
+        <mat-expansion-panel [expanded]="moreOpen()" (expandedChange)="moreOpen.set($event)">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="more-title">More details</mat-panel-title>
+            <mat-panel-description>Optional</mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="fields">
+            <mat-form-field class="full-width">
+              <mat-label>Short description</mat-label>
+              <textarea matInput formControlName="description" rows="4" [attr.maxlength]="descriptionMaxLength"></textarea>
+              <mat-hint align="end">{{ form.controls.description.value.length }} / {{ descriptionMaxLength }}</mat-hint>
+              <mat-error>{{ error('description') }}</mat-error>
+            </mat-form-field>
+
+            <app-keyword-chips-field [control]="form.controls.keywords" />
+
+            <div>
+              <p class="sub-label">Images</p>
+              <app-image-picker [(images)]="images" [max]="maxImages" />
+            </div>
+          </div>
+        </mat-expansion-panel>
+
+        <div class="form-actions">
+          <a mat-stroked-button routerLink="/my/products">Cancel</a>
+          <app-primary-button type="submit" [label]="isEdit ? 'Save changes' : 'Add product'" loadingLabel="Saving…" [loading]="saving()" />
+        </div>
+      </form>
+    }
+  }
+</div>

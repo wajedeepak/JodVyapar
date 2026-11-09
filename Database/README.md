@@ -8,6 +8,7 @@ creates or changes tables (no migrations, no `EnsureCreated`).
 | `01_CreateTables.sql` | All tables, keys, foreign keys, unique constraints, defaults and indexes | Yes (`IF NOT EXISTS`) |
 | `02_SeedData.sql` | Roles (Buyer, Seller, Admin), all states/UTs, major cities, starter category tree | Yes (`MERGE` on fixed GUIDs) |
 | `03_ProfileAboutAndActivityEvents.sql` | Adds `CompanyProfiles.About` (nvarchar(500), nullable) and the `ActivityEvents` log table with its indexes | Yes (`COL_LENGTH` / `IF NOT EXISTS`) |
+| `04_ProductsAndRequirements.sql` | `Units` (with 14 seeded rows), `Products`, `ProductImages`, `Requirements` and their indexes | Yes (`IF NOT EXISTS` / `MERGE` on fixed GUIDs) |
 | `99_DropAll.sql` | **Dev only.** Drops every JodVyapar table for a clean reset | Yes |
 
 The admin user is not in these scripts. The API creates it at startup from `AdminSeed:Email` /
@@ -15,11 +16,11 @@ The admin user is not in these scripts. The API creates it at startup from `Admi
 
 ## Run order
 
-New database: `01` → `02` → `03`. Then start the API.
+New database: `01` → `02` → `03` → `04`. Then start the API.
 
-Existing database: run only the scripts you haven't run yet, in order (for example just `03`).
+Existing database: run only the scripts you haven't run yet, in order (for example just `04`).
 
-Reset a local database: `99` → `01` → `02` → `03`.
+Reset a local database: `99` → `01` → `02` → `03` → `04`.
 
 ## How to run
 
@@ -35,8 +36,9 @@ and execute (F5).
 sqlcmd -S localhost -E -C -d JodvyaparDB -b -i Database/01_CreateTables.sql
 sqlcmd -S localhost -E -C -d JodvyaparDB -b -i Database/02_SeedData.sql
 sqlcmd -S localhost -E -C -d JodvyaparDB -b -i Database/03_ProfileAboutAndActivityEvents.sql
+sqlcmd -S localhost -E -C -d JodvyaparDB -b -i Database/04_ProductsAndRequirements.sql
 
-# Clean reset (dev only): drop everything, then run 01, 02 and 03 again
+# Clean reset (dev only): drop everything, then run 01, 02, 03 and 04 again
 sqlcmd -S localhost -E -C -d JodvyaparDB -b -i Database/99_DropAll.sql
 ```
 

@@ -1,0 +1,40 @@
+// Layout shared by the My products / My requirements lists and the two listing forms.
+@use 'breakpoints' as bp;
+@use '../profile/profile-pages';
+
+.listing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--jv-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include bp.up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include bp.up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jv-space-4);
+}
+
+.more-title {
+  font-weight: var(--jv-font-weight-semibold);
+}
+
+.sub-label {
+  margin-bottom: var(--jv-space-2);
+  color: var(--jv-color-text-muted);
+  font-size: var(--jv-font-size-sm);
+}
+
+.danger {
+  --mat-button-text-label-text-color: var(--jv-color-error);
+}

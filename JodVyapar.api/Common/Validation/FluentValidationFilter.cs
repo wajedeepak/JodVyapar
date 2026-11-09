@@ -32,7 +32,7 @@ public sealed class FluentValidationFilter : IAsyncActionFilter
             var result = await validator.ValidateAsync(new ValidationContext<object>(argument), context.HttpContext.RequestAborted);
             foreach (var error in result.Errors)
             {
-                context.ModelState.AddModelError(ToCamelCasePath(error.PropertyName), error.ErrorMessage);
+                context.ModelState.AddFieldError(ToCamelCasePath(error.PropertyName), error.ErrorMessage);
             }
         }
 

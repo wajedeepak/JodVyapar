@@ -11,6 +11,9 @@
               <span class="icon-tile" aria-hidden="true"><mat-icon>{{ card.icon }}</mat-icon></span>
               <span class="text">
                 <span class="title">{{ card.title }}</span>
+                @if (card.showsActiveCount && activeCount() !== null) {
+                  <app-badge class="count" variant="primary">{{ activeCount() }} active</app-badge>
+                }
                 <span class="description">{{ card.description }}</span>
               </span>
               <mat-icon class="arrow" aria-hidden="true">arrow_forward</mat-icon>

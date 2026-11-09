@@ -11,6 +11,10 @@
 SET NOCOUNT ON;
 GO
 
+DROP TABLE IF EXISTS dbo.ProductImages;
+DROP TABLE IF EXISTS dbo.Products;
+DROP TABLE IF EXISTS dbo.Requirements;
+DROP TABLE IF EXISTS dbo.Units;
 DROP TABLE IF EXISTS dbo.ActivityEvents;
 DROP TABLE IF EXISTS dbo.EmailOtps;
 DROP TABLE IF EXISTS dbo.CompanyProfiles;

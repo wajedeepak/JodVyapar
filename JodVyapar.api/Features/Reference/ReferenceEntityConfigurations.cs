@@ -31,6 +31,17 @@ internal sealed class CityConfiguration : IEntityTypeConfiguration<City>
     }
 }
 
+internal sealed class UnitConfiguration : IEntityTypeConfiguration<Unit>
+{
+    public void Configure(EntityTypeBuilder<Unit> builder)
+    {
+        builder.ToTable("Units");
+        builder.Property(u => u.Name).HasMaxLength(50);
+        builder.Property(u => u.Symbol).HasMaxLength(20);
+        builder.HasIndex(u => u.Name).IsUnique().HasDatabaseName("UX_Units_Name");
+    }
+}
+
 internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)

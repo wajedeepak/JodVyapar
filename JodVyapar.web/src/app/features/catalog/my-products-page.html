@@ -1,0 +1,66 @@
+<div class="page">
+  <app-page-header title="My products" subtitle="What buyers see on your profile.">
+    @if (status() === 'ready') {
+      <div pageHeaderActions>
+        <a mat-flat-button routerLink="/products/new">
+          <mat-icon aria-hidden="true">add</mat-icon>
+          Add product
+        </a>
+      </div>
+    }
+  </app-page-header>
+
+  @switch (status()) {
+    @case ('loading') {
+      <div class="listing-grid" aria-busy="true">
+        <span class="jv-sr-only" role="status">Loading your products…</span>
+        @for (card of [1, 2, 3]; track card) {
+          <app-skeleton shape="block" />
+        }
+      </div>
+    }
+
+    @case ('error') {
+      <app-alert-banner type="error" title="Couldn't load your products">
+        <p>{{ loadError() }}</p>
+        <button mat-button type="button" class="banner-action" (click)="reload()">Retry</button>
+      </app-alert-banner>
+    }
+
+    @case ('empty') {
+      <app-empty-state icon="inventory_2" title="No products yet" message="List what you sell so buyers can find you.">
+        <div emptyStateActions>
+          <a mat-flat-button routerLink="/products/new">Add your first product</a>
+        </div>
+      </app-empty-state>
+    }
+
+    @case ('ready') {
+      <ul class="listing-grid">
+        @for (product of items(); track product.id) {
+          <li>
+            <app-listing-card
+              [title]="product.title"
+              [category]="product.parentCategoryName + ' › ' + product.categoryName"
+              [facts]="facts(product)"
+              [showImage]="true"
+              [imageUrl]="product.images[0]?.url ?? null"
+            >
+              <app-status-badge listingBadge [status]="product.status" />
+              <div listingActions>
+                <a mat-button [routerLink]="['/products', product.id, 'edit']">Edit</a>
+                @if (product.status === 'Active') {
+                  <button mat-button type="button" [disabled]="busyId() === product.id" (click)="pause(product)">Pause</button>
+                } @else {
+                  <button mat-button type="button" [disabled]="busyId() === product.id" (click)="activate(product)">Activate</button>
+                }
+                <button mat-button type="button" class="danger" [disabled]="busyId() === product.id" (click)="remove(product)">Delete</button>
+              </div>
+            </app-listing-card>
+          </li>
+        }
+      </ul>
+      <app-pager [page]="page()" [pageSize]="pageSize" [totalCount]="totalCount()" (pageChange)="goTo($event)" />
+    }
+  }
+</div>

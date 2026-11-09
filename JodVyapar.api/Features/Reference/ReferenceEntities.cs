@@ -22,6 +22,15 @@ public class City : AuditableEntity
     public required string Name { get; set; }
 }
 
+/// <summary>Unit of measure for prices and quantities. Rows are seeded by Database/04_ProductsAndRequirements.sql.</summary>
+public class Unit : AuditableEntity
+{
+    public required string Name { get; set; }
+    public required string Symbol { get; set; }
+    public int SortOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+}
+
 /// <summary>Two-level tree: top-level categories have no ParentId, subcategories point to their parent.</summary>
 public class Category : AuditableEntity
 {

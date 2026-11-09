@@ -4,10 +4,13 @@ using JodVyapar.Api.Common.Activity;
 using JodVyapar.Api.Common.Email;
 using JodVyapar.Api.Common.Errors;
 using JodVyapar.Api.Common.RateLimiting;
+using JodVyapar.Api.Common.Storage;
 using JodVyapar.Api.Common.Validation;
+using JodVyapar.Api.Features.Catalog;
 using JodVyapar.Api.Features.Identity;
 using JodVyapar.Api.Features.Profiles;
 using JodVyapar.Api.Features.Reference;
+using JodVyapar.Api.Features.Requirements;
 using JodVyapar.Api.Infrastructure.Data;
 using JodVyapar.Api.Infrastructure.Seed;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +49,15 @@ builder.Services.AddIdentityFeature(builder.Configuration);
 builder.Services.AddScoped<ReferenceService>();
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<IActivityLogger, ActivityLogger>();
+builder.Services.AddScoped<ListingReferenceChecker>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<RequirementService>();
+builder.Services.AddScoped<RequirementExpiryService>();
+builder.Services.AddHostedService<RequirementExpiryJob>();
+
+// Uploaded files. To move to Azure Blob, register a different IFileStorage here (see IFileStorage).
+builder.Services.Configure<FileStorageOptions>(builder.Configuration.GetSection(FileStorageOptions.SectionName));
+builder.Services.AddSingleton<IFileStorage, LocalDiskFileStorage>();
 
 // CORS for the Angular dev server (origins configurable via Cors:AllowedOrigins).
 const string CorsPolicy = "Frontend";

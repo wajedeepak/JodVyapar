@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { authGuard, roleGuard } from './core/auth/auth.guards';
+import { authGuard, roleGuard, unsavedChangesGuard } from './core/auth/auth.guards';
 import type { ComingSoonData } from './features/placeholders/coming-soon-page';
 
 /** Route data for the shared "Coming soon" placeholder page. */
@@ -55,26 +55,46 @@ export const routes: Routes = [
         path: 'profile',
         loadChildren: () => import('./features/profile/profile.routes').then((m) => m.PROFILE_ROUTES),
       },
-      // Home action cards. Guarded by the roles the user holds (never by the active mode).
+      // Listings. Guarded by the roles the user holds (never by the active mode).
       {
-        path: 'requirements/new',
-        canActivate: [roleGuard('Buyer')],
-        title: 'Post a requirement | JodVyapar',
-        ...comingSoon({
-          icon: 'post_add',
-          heading: 'Posting requirements is coming soon',
-          message: 'Describe what you need and matching sellers will be able to find you.',
-        }),
+        path: 'my/products',
+        canActivate: [roleGuard('Seller')],
+        title: 'My products | JodVyapar',
+        loadComponent: () => import('./features/catalog/my-products-page').then((m) => m.MyProductsPage),
       },
       {
         path: 'products/new',
         canActivate: [roleGuard('Seller')],
+        canDeactivate: [unsavedChangesGuard],
         title: 'Add a product | JodVyapar',
-        ...comingSoon({
-          icon: 'add_box',
-          heading: 'Adding products is coming soon',
-          message: 'List what you sell so buyers can find you and get in touch.',
-        }),
+        loadComponent: () => import('./features/catalog/product-form-page').then((m) => m.ProductFormPage),
+      },
+      {
+        path: 'products/:id/edit',
+        canActivate: [roleGuard('Seller')],
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit product | JodVyapar',
+        loadComponent: () => import('./features/catalog/product-form-page').then((m) => m.ProductFormPage),
+      },
+      {
+        path: 'my/requirements',
+        canActivate: [roleGuard('Buyer')],
+        title: 'My requirements | JodVyapar',
+        loadComponent: () => import('./features/requirements/my-requirements-page').then((m) => m.MyRequirementsPage),
+      },
+      {
+        path: 'requirements/new',
+        canActivate: [roleGuard('Buyer')],
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Post a requirement | JodVyapar',
+        loadComponent: () => import('./features/requirements/requirement-form-page').then((m) => m.RequirementFormPage),
+      },
+      {
+        path: 'requirements/:id/edit',
+        canActivate: [roleGuard('Buyer')],
+        canDeactivate: [unsavedChangesGuard],
+        title: 'Edit requirement | JodVyapar',
+        loadComponent: () => import('./features/requirements/requirement-form-page').then((m) => m.RequirementFormPage),
       },
       {
         path: 'requirements',

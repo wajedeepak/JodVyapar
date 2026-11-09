@@ -70,6 +70,10 @@
   line-height: var(--jv-line-height-tight);
 }
 
+.count {
+  align-self: flex-start;
+}
+
 .description {
   color: var(--jv-color-text-muted);
   font-size: var(--jv-font-size-sm);

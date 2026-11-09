@@ -171,6 +171,10 @@ describe('PublicProfilePage', () => {
     const { fixture, el, http } = setup('other-user');
     http.expectOne(`${api}/profile/other-user`).flush(publicProfile);
     fixture.detectChanges();
+    http
+      .expectOne((r) => r.url === `${api}/profile/other-user/requirements`)
+      .flush({ items: [], page: 1, pageSize: 12, totalCount: 0 });
+    fixture.detectChanges();
 
     expect(el.querySelector('h1')?.textContent).toContain('Ravi Kumar');
     expect(el.textContent).toContain('Kumar Traders');
@@ -194,6 +198,10 @@ describe('PublicProfilePage', () => {
   it('tells owners this is their public view instead of offering to message themselves', () => {
     const { fixture, el, http } = setup(TEST_USER_ID);
     http.expectOne(`${api}/profile/${TEST_USER_ID}`).flush({ ...publicProfile, id: TEST_USER_ID, roles: ['Seller'] });
+    fixture.detectChanges();
+    http
+      .expectOne((r) => r.url === `${api}/profile/${TEST_USER_ID}/products`)
+      .flush({ items: [], page: 1, pageSize: 12, totalCount: 0 });
     fixture.detectChanges();
 
     expect(el.textContent).toContain('This is how other businesses see your profile.');

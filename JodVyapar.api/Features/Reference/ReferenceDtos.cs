@@ -8,6 +8,8 @@ public sealed record CityDto(Guid Id, Guid StateId, string Name);
 
 public sealed record CategoryDto(Guid Id, string Name, string Slug, IReadOnlyList<CategoryDto> Children);
 
+public sealed record UnitDto(Guid Id, string Name, string Symbol);
+
 public sealed class CityQuery
 {
     public Guid? StateId { get; init; }

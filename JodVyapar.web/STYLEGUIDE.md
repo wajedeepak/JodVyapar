@@ -182,6 +182,32 @@ A short yes/no question in a `MatDialog`: `confirm(this.dialog, { title, message
 returns `Observable<boolean>`. Cancel, Esc and the backdrop all mean no. Use it for "Add the Seller role?"
 and "Discard your changes?".
 
+### `<app-category-fields [parentControl] [categoryControl]>`
+The dependent Category and Subcategory selects, laid out like `<app-state-city-fields>`. Changing the
+category clears the subcategory; saved values are kept on an edit form. Server errors on `categoryId` show under it.
+
+### `<app-unit-field [control]>`
+The unit of measure select, with loading, empty and error-with-Retry hints.
+
+### `<app-keyword-chips-field [control]>`
+Keywords as chips, bound to a `FormControl<string[]>`. Enter, a comma or leaving the field adds one. Values are
+normalized the same way as the API's `KeywordNormalizer`, up to 10.
+
+### `<app-image-picker [(images)] [max]>`
+Choose images by tap or drag and drop, with previews and remove. Checks type and size in the browser. It only
+tracks the selection: items with `file` are new, items with `id` are already saved. The page uploads and deletes on save.
+
+### `<app-listing-card title category facts description showImage imageUrl headingLevel>`
+One product or requirement in a list. `facts` is a `ListingFact[]` (`productFacts()` / `requirementFacts()` in
+`core/listings/listing-format.ts`). Put an `<app-status-badge listingBadge>` and a `<div listingActions>` in the slots.
+Use `[headingLevel]="3"` when the list sits under an `h2`.
+
+### `<app-status-badge [status]>`
+A listing's status: Active (success), Paused (warning), Fulfilled (info), Expired (neutral).
+
+### `<app-pager [page] [pageSize] [totalCount] (pageChange)>`
+Previous, "Page 1 of 3" and Next under a list. Renders nothing when there is only one page.
+
 ### `<app-logo-mark size variant showWordmark>`
 `size` is `sm` | `md` | `lg`. Use `variant="inverse"` on blue backgrounds.
 
@@ -234,6 +260,11 @@ The function is `resolveActiveMode()` in `core/auth/active-mode.ts`.
 
 Lookup lists use a `ListStatus` signal (`'idle' | 'loading' | 'ready' | 'empty' | 'error'`) to
 drive these states. See `<app-state-city-fields>`.
+
+**Listings.** A paged list extends `ListingListBase` (`core/listings/`): implement `fetch(page)` and use `status()`,
+`items()`, `busyId()`, `runAction()`, `confirmAction()` and `confirmDelete()`. A listing form extends `ListingFormBase`,
+which handles add vs edit by route `id`, the "More details" panel (it opens when a field inside has an error) and the
+unsaved-changes warning. Lists and forms share `features/catalog/listing-pages.scss`.
 
 **Unsaved changes.** An edit page implements `HasUnsavedChanges.confirmLeave()`, and its route sets
 `canDeactivate: [unsavedChangesGuard]`. If the form is dirty, `confirmLeave()` asks with `confirm()`

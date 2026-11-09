@@ -123,6 +123,25 @@
             </dl>
           </app-profile-section>
 
+          @switch (auth.activeMode()) {
+            @case ('Seller') {
+              <app-profile-section title="My listings">
+                <a mat-stroked-button routerLink="/my/products">
+                  <mat-icon aria-hidden="true">inventory_2</mat-icon>
+                  My products
+                </a>
+              </app-profile-section>
+            }
+            @case ('Buyer') {
+              <app-profile-section title="My listings">
+                <a mat-stroked-button routerLink="/my/requirements">
+                  <mat-icon aria-hidden="true">assignment_turned_in</mat-icon>
+                  My requirements
+                </a>
+              </app-profile-section>
+            }
+          }
+
           <app-profile-section title="Roles">
             <div class="jv-stack">
               <app-role-badges [roles]="roles()" />
